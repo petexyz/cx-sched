@@ -77,6 +77,15 @@
     return "<span class='bbadge " + (b.s === "listed" ? "b-listed" : "b-uncertain") + "'>" + esc(b.t) + "</span>";
   }
 
+  // ---- The gag column: a beer and a bourbon per race ----
+  function pairHtml(ev) {
+    const p = (D.pairings || {})[ev.n];
+    if (!p) return "<span class='tba'>&ndash;</span>";
+    return "<div class='pairbox'><span class='pair'><span aria-hidden='true'>\uD83C\uDF7A </span><span class='sr'>Beer: </span>" + esc(p.beer) +
+      "<br><span aria-hidden='true'>\uD83E\uDD43 </span><span class='sr'>Bourbon: </span>" + esc(p.bourbon) + "</span>" +
+      (p.why ? "<small class='why'>" + esc(p.why) + "</small>" : "") + "</div>";
+  }
+
   // ---- Links: race's own link over the series default ----
   const linksFor = ev => Object.assign({}, (D.seriesLinks || {})[ev.s], ev.l || {});
   function linksHtml(ev, withMapButton) {
@@ -177,12 +186,13 @@
       "<td class='loc' data-label='Where'><span class='v'>" + esc(ev.p) + "</span></td>" +
       "<td data-label='Series'>" + tagHtml(ev.s) + "</td>" +
       "<td class='time' data-label='Start (ET)'><div class='v'>" + timesCell(ev) + "</div></td>" +
-      "<td data-label='US broadcast'>" + badgeHtml(ev) + "</td></tr>";
+      "<td data-label='US broadcast'>" + badgeHtml(ev) + "</td>" +
+      "<td class='pairing' data-label='Best paired with'>" + pairHtml(ev) + "</td></tr>";
   }
   function renderCal(list) {
     $("cal").innerHTML = "<caption class='sr'>Race calendar</caption><thead><tr>" +
-      ["Date", "Race", "Where", "Series", "Start (ET)", "US broadcast"].map(h => "<th scope='col'>" + h + "</th>").join("") + "</tr></thead><tbody>" +
-      (list.length ? list.map(rowHtml).join("") : "<tr><td colspan='6' class='tba' data-label=''>No races match these filters.</td></tr>") + "</tbody>";
+      ["Date", "Race", "Where", "Series", "Start (ET)", "US broadcast", "Best paired with (a joke)"].map(h => "<th scope='col'>" + h + "</th>").join("") + "</tr></thead><tbody>" +
+      (list.length ? list.map(rowHtml).join("") : "<tr><td colspan='7' class='tba' data-label=''>No races match these filters.</td></tr>") + "</tbody>";
   }
   function renderCount(list) {
     const hidden = state.when === "upcoming" ? events.filter(e => passes(e, true) && finished(e)).length : 0;
@@ -204,9 +214,10 @@
     cluster = L.markerClusterGroup({ maxClusterRadius: 30, showCoverageOnHover: false });
     map.addLayer(cluster);
   }
+  function pairPopup(ev) { const p = (D.pairings || {})[ev.n]; return p ? "<br>Pairs with: " + esc(p.beer) + " + " + esc(p.bourbon) + " (a joke)" : ""; }
   function popupHtml(ev) {
     return "<b>" + esc(ev.n) + "</b><br>" + esc(ev.p) + "<br>" + esc(fmtRange(ev)) + "<br>" + esc(D.series[ev.s].short) +
-      "<br>Women: " + esc(timeText(ev, "w")) + "<br>Men: " + esc(timeText(ev, "m")) + "<br>US: " + esc(bcast(ev).t) + "<br>" + linksHtml(ev, false);
+      "<br>Women: " + esc(timeText(ev, "w")) + "<br>Men: " + esc(timeText(ev, "m")) + "<br>US: " + esc(bcast(ev).t) + pairPopup(ev) + "<br>" + linksHtml(ev, false);
   }
   function updateMap(list) {
     if (!map) return;

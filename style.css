@@ -98,6 +98,9 @@ tr.past .links a { color: var(--fg); }
 .bbadge { display: inline-block; padding: 1px 8px; border: 1px solid currentColor; border-radius: 10px; font-size: 12px; white-space: nowrap; }
 .b-listed { color: var(--ok); } .b-uncertain { color: var(--warn); }
 .tm { display: block; white-space: nowrap; }
+td.pairing { min-width: 210px; font-size: 13px; }
+.pair { display: inline-block; }
+.why { display: block; margin-top: 2px; font-style: italic; }
 .tm small { display: block; }
 
 /* Where to watch: compact, expandable */
