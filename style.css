@@ -53,7 +53,7 @@ h2 { font-size: 18px; margin: 32px 0 8px; }
 /* Clock */
 #clock { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 4px 0 12px; }
 #clock div { border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; background: var(--head); }
-#clock b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+#clock b { display: block; font-size: 13px; color: var(--muted); font-weight: 600; }
 #clock span { font-size: 18px; font-variant-numeric: tabular-nums; }
 .note { background: var(--warn-bg); color: var(--warn); padding: 8px 12px; border-radius: 6px; margin: 0 0 8px; font-size: 14px; }
 
@@ -61,7 +61,7 @@ h2 { font-size: 18px; margin: 32px 0 8px; }
 details.filters { margin: 0 0 8px; }
 details.filters > summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
 .fgroup { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 8px; }
-.fgroup > .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); min-width: 68px; }
+.fgroup > .lbl { font-size: 13px; font-weight: 600; color: var(--muted); min-width: 72px; }
 #count { color: var(--muted); font-size: 13px; margin: 4px 0 10px; }
 #count button { font: inherit; color: var(--fg); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 
@@ -81,7 +81,7 @@ details.filters > summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
 .wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
 table { border-collapse: collapse; width: 100%; min-width: 720px; }
 th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { background: var(--head); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+th { background: var(--head); font-size: 13px; font-weight: 600; color: var(--muted); }
 tr:last-child td { border-bottom: 0; }
 td.date, td.time { white-space: nowrap; font-variant-numeric: tabular-nums; }
 td.loc { color: var(--muted); }
@@ -136,7 +136,7 @@ footer { margin-top: 32px; color: var(--muted); font-size: 13px; }
   .stack, .stack tbody, .stack tr, .stack td, .stack caption { display: block; width: 100%; }
   .stack tr { border: 1px solid var(--line); border-radius: 8px; margin: 0 0 8px; padding: 8px 10px; }
   .stack td { border: 0; padding: 2px 0; display: flex; gap: 10px; align-items: flex-start; }
-  .stack td::before { content: attr(data-label); flex: 0 0 84px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .03em; padding-top: 2px; }
+  .stack td::before { content: attr(data-label); flex: 0 0 84px; color: var(--muted); font-size: 13px; font-weight: 600; padding-top: 2px; }
   .stack td.race::before, .stack td.date::before { display: none; }
   .stack td.race { font-weight: 600; display: block; }
   .stack td.date { color: var(--muted); }

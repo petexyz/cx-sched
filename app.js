@@ -165,7 +165,7 @@
     Object.keys(D.series).forEach(k => chip(s, shape(D.series[k].shape, D.series[k].color, 12) + esc(D.series[k].short),
       () => state.series.has(k), () => { state.series.has(k) ? state.series.delete(k) : state.series.add(k); update(); }));
 
-    const v = $("f-view"); label(v, "Map view");
+    const v = $("f-view"); label(v, "Map View");
     [["auto", "Auto (follow filters)"], ["eu", "Europe"], ["na", "North America"], ["world", "Both"]].forEach(([k, l]) =>
       chip(v, esc(l), () => state.view === k, () => { state.view = k; update(); }));
     v.insertAdjacentHTML("beforeend", "<small id='viewnote'></small>");
@@ -186,12 +186,12 @@
       "<td class='loc' data-label='Where'><span class='v'>" + esc(ev.p) + "</span></td>" +
       "<td data-label='Series'>" + tagHtml(ev.s) + "</td>" +
       "<td class='time' data-label='Start (ET)'><div class='v'>" + timesCell(ev) + "</div></td>" +
-      "<td data-label='US broadcast'>" + badgeHtml(ev) + "</td>" +
-      "<td class='pairing' data-label='Best paired with'>" + pairHtml(ev) + "</td></tr>";
+      "<td data-label='US Broadcast'>" + badgeHtml(ev) + "</td>" +
+      "<td class='pairing' data-label='Best Paired With'>" + pairHtml(ev) + "</td></tr>";
   }
   function renderCal(list) {
     $("cal").innerHTML = "<caption class='sr'>Race calendar</caption><thead><tr>" +
-      ["Date", "Race", "Where", "Series", "Start (ET)", "US broadcast", "Best paired with"].map(h => "<th scope='col'>" + h + "</th>").join("") + "</tr></thead><tbody>" +
+      ["Date", "Race", "Where", "Series", "Start (ET)", "US Broadcast", "Best Paired With"].map(h => "<th scope='col'>" + h + "</th>").join("") + "</tr></thead><tbody>" +
       (list.length ? list.map(rowHtml).join("") : "<tr><td colspan='7' class='tba' data-label=''>No races match these filters.</td></tr>") + "</tbody>";
   }
   function renderCount(list) {
@@ -345,8 +345,8 @@
     const fmt = tz => new Intl.DateTimeFormat("en-US", { timeZone: tz, weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })
       .format(d).replace(/ /g, " ") + " " + zoneName(tz);
     const local = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const boxes = [["Your time (Eastern)", fmt("America/New_York")], ["Central Europe", fmt("Europe/Brussels")]];
-    if (local && local !== "America/New_York" && local !== "Europe/Brussels") boxes.push(["Your browser's zone", fmt(local)]);
+    const boxes = [["Your Time (Eastern)", fmt("America/New_York")], ["Central Europe", fmt("Europe/Brussels")]];
+    if (local && local !== "America/New_York" && local !== "Europe/Brussels") boxes.push(["Your Browser's Zone", fmt(local)]);
     $("clock").innerHTML = boxes.map(b => "<div><b>" + esc(b[0]) + "</b><span>" + esc(b[1]) + "</span></div>").join("");
   }
   renderClock(); setInterval(renderClock, 15000);
