@@ -287,9 +287,9 @@
   })();
 
   // ---- Waving flag: black / yellow / red. One SVG whose edges follow a travelling sine wave, with moving
-  // fold shading. It flies for 10 seconds (time on screen only, ~30 fps) and then freezes on its last frame. ----
+  // fold shading. It flies for 5 seconds (time on screen only, ~30 fps) and then freezes on its last frame. ----
   (function waveFlag() {
-    const W = 1200, H = 96, TOP = 16, BOT = 80, AMP = 8, LAMBDA = 300, PERIOD = 2800, STEP = 33, FLY_MS = 10000;
+    const W = 1200, H = 96, TOP = 16, BOT = 80, AMP = 8, LAMBDA = 300, PERIOD = 2800, STEP = 33, FLY_MS = 5000;
     const K = 2 * Math.PI / LAMBDA, OMEGA = 2 * Math.PI / PERIOD;
     $("flag").innerHTML =
       "<svg viewBox='0 0 " + W + " " + H + "' preserveAspectRatio='none'>" +
