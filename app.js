@@ -287,9 +287,9 @@
   })();
 
   // ---- Waving flag: black / yellow / red. One SVG whose edges follow a travelling sine wave, with moving
-  // fold shading. Runs at ~30 fps, stops while scrolled out of view or in a hidden tab, and can be paused. ----
+  // fold shading. It flies for 10 seconds (time on screen only, ~30 fps) and then freezes on its last frame. ----
   (function waveFlag() {
-    const W = 1200, H = 96, TOP = 16, BOT = 80, AMP = 8, LAMBDA = 300, PERIOD = 2800, STEP = 33;
+    const W = 1200, H = 96, TOP = 16, BOT = 80, AMP = 8, LAMBDA = 300, PERIOD = 2800, STEP = 33, FLY_MS = 10000;
     const K = 2 * Math.PI / LAMBDA, OMEGA = 2 * Math.PI / PERIOD;
     $("flag").innerHTML =
       "<svg viewBox='0 0 " + W + " " + H + "' preserveAspectRatio='none'>" +
@@ -314,26 +314,20 @@
       const shift = ph / K; fold.setAttribute("x1", shift); fold.setAttribute("x2", shift + LAMBDA);
     }
     const fixed = params.get("flagt");
-    const stored = store.get("cx-motion");
-    let motionOn = fixed === null && (stored ? stored === "on" : !reduceMq.matches);
-    let inView = true, raf = 0, last = 0;
-    const btn = $("motion");
-    function paint() {
-      btn.textContent = motionOn ? "⏸ Pause flag" : "▶ Play flag";
-      btn.setAttribute("aria-label", motionOn ? "Pause the flag animation" : "Play the flag animation");
-    }
+    let inView = true, raf = 0, last = 0, prev = 0, flown = 0;
     function loop(now) {
-      raf = 0; if (!motionOn || !inView || document.hidden) return;
+      raf = 0;
+      if (!inView || document.hidden) { prev = 0; return; }          // paused while off-screen; time does not count
+      flown += prev ? Math.min(now - prev, 100) : 0; prev = now;
       if (now - last >= STEP) { last = now; draw(now); }
-      raf = requestAnimationFrame(loop);
+      if (flown < FLY_MS) raf = requestAnimationFrame(loop);        // otherwise the flag stays on its last frame
     }
-    function sync() { if (motionOn && inView && !document.hidden && !raf) raf = requestAnimationFrame(loop); }
+    function sync() { if (flown < FLY_MS && inView && !document.hidden && !raf) raf = requestAnimationFrame(loop); }
     draw(fixed !== null ? (+fixed || 0) : 0);
-    if (fixed !== null) { btn.hidden = true; return; }
-    btn.onclick = () => { motionOn = !motionOn; store.set("cx-motion", motionOn ? "on" : "off"); paint(); sync(); };
+    if (fixed !== null || reduceMq.matches) return;                  // preview frame, or the viewer asked for less motion
     if ("IntersectionObserver" in window) new IntersectionObserver(es => { inView = es[0].isIntersecting; sync(); }).observe($("flag"));
     document.addEventListener("visibilitychange", sync);
-    paint(); sync();
+    sync();
   })();
 
   // ---- Clock: your time (Eastern), Central Europe, and the browser's zone if it is neither ----
