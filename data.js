@@ -1,63 +1,72 @@
-// Edit this file to update the guide. index.html renders everything from here.
+// Edit this file to update the guide. app.js renders everything from here.
 // Last researched: 2026-09-20.
 //
 // broadcast.status:
 //   "listed"     = the broadcaster has published a 2026-27 event page
 //   "last-season"= carried it in 2025-26, no 2026-27 announcement found
 //   "unknown"    = no US information found
+// broadcast.<series>.badge = the short label shown on each race row (trailing "?" = not confirmed).
+// An event can override it with  b: { t: "text", s: "status" }.
 
 window.CX = {
   updated: "2026-09-20",
 
   series: {
-    wc:   { name: "UCI World Cup",     short: "World Cup",   color: "#c8102e", note: "12 rounds, Nov 27 – Jan 24. Top-tier UCI series." },
-    sp:   { name: "Superprestige",     short: "Superprestige", color: "#0b6fb8", note: "8 Belgian rounds, Oct 25 – Jan 2 (Telenet title sponsor)." },
-    x2o:  { name: "X²O Badkamers Trofee", short: "X²O Trofee", color: "#2a8a4a", note: "8 rounds, Nov 1 – Feb 14 (Golazo)." },
-    hg:   { name: "HG Cross",          short: "HG Cross",    color: "#b8651b", note: "Formerly Exact Cross. 7 rounds, Oct 11 – Feb 13 (Golazo)." },
-    champ:{ name: "Championships",     short: "Championships", color: "#6b3fa0", note: "European, Pan-American and World Championships." },
-    nat:  { name: "National championships", short: "Nationals", color: "#a0306b", note: "US, Canadian, Belgian and Dutch national championships." },
-    us:   { name: "US UCI calendar",   short: "US",          color: "#5a6570", note: "8 US UCI events (USCX and others). Pan-Ams and US Nationals are listed under Championships and Nationals." }
+    wc:   { name: "UCI World Cup",     short: "World Cup",   color: "#c8102e", shape: "circle", note: "12 rounds, Nov 27 – Jan 24. Top-tier UCI series." },
+    sp:   { name: "Superprestige",     short: "Superprestige", color: "#0b6fb8", shape: "square", note: "8 Belgian rounds, Oct 25 – Jan 2 (Telenet title sponsor)." },
+    x2o:  { name: "X²O Badkamers Trofee", short: "X²O Trofee", color: "#237a3f", shape: "diamond", note: "8 rounds, Nov 1 – Feb 14 (Golazo)." },
+    hg:   { name: "HG Cross",          short: "HG Cross",    color: "#a85a14", shape: "triangle", note: "Formerly Exact Cross. 7 rounds, Oct 11 – Feb 13 (Golazo)." },
+    champ:{ name: "Championships",     short: "Championships", color: "#6b3fa0", shape: "hexagon", note: "European, Pan-American and World Championships." },
+    nat:  { name: "National championships", short: "Nationals", color: "#a0306b", shape: "star", note: "US, Canadian, Belgian and Dutch national championships." },
+    us:   { name: "US UCI calendar",   short: "US",          color: "#5a6570", shape: "cross", note: "8 US UCI events (USCX and others). Pan-Ams and US Nationals are listed under Championships and Nationals." }
   },
 
   // What a US viewer can use, per series.
   broadcast: {
     wc: {
+      badge: "FloBikes",
       primary: "FloBikes",
       status: "listed",
       detail: "FloBikes has published its 2026-27 page for Round 1 (Ostrava) and has carried the World Cup in the US for several seasons. HBO Max does not carry it.",
       fallback: "UCI YouTube streams rounds only where no local broadcaster has the rights, and US access has been inconsistent. Treat it as a bonus."
     },
     sp: {
+      badge: "FloBikes or HBO Max?",
       primary: "FloBikes or HBO Max (unresolved)",
       status: "unknown",
       detail: "Conflicting signals. HBO Max carried it in 2025-26, but FloBikes has published 2026-27 pages for Overijse and Heusden. Their dates are off from the official calendar (Oct 26 vs Oct 25; Dec 23 vs Dec 25 in Zolder), so they may be placeholders.",
       fallback: "Check both services the week before Overijse (Oct 25)."
     },
     x2o: {
+      badge: "HBO Max?",
       primary: "HBO Max (2025-26 rights holder)",
       status: "last-season",
       detail: "HBO Max streamed it in 2025-26. No US announcement found for 2026-27, and no FloBikes 2026-27 pages. FloBikes carried it in 2023-24, so it could move back.",
       fallback: "Sporza (Belgium) is free-to-air through at least 2028 but geo-blocked from the US."
     },
     hg: {
+      badge: "HBO Max?",
       primary: "HBO Max (2025-26 rights holder)",
       status: "last-season",
       detail: "Formerly Exact Cross. HBO Max streamed it in 2025-26 (its site showed Maldegem, Feb 4). No US announcement found for 2026-27 under the new name.",
       fallback: "Sporza (Belgium), geo-blocked from the US."
     },
     champ: {
+      badge: "FloBikes?",
       primary: "FloBikes for Worlds; Euros unknown",
       status: "unknown",
       detail: "FloBikes streamed the 2026 Worlds in Hulst (USA Cycling's how-to-watch pointed to it); HBO Max does not carry Worlds. No FloBikes page yet for Ostend 2027, and no US information for the Euros.",
       fallback: "UCI YouTube carries Worlds on the same conditions as the World Cup."
     },
     nat: {
+      badge: "Unknown",
       primary: "Unknown for all four",
       status: "unknown",
       detail: "US: USA Cycling says select races will stream online, platform not named. Canada, Belgium and the Netherlands: no US information found. The Belgian and Dutch races normally air on Sporza and NOS, which are geo-blocked outside those countries.",
       fallback: "Check USA Cycling (cxnats.usacycling.org) for the US stream, and FloBikes the week of the Belgian and Dutch races."
     },
     us: {
+      badge: "YouTube (CXTV)?",
       primary: "YouTube (event streams)",
       status: "last-season",
       detail: "CXTV streamed the USCX races in full on YouTube in 2025; 2026 streams are not posted yet. Links are collected at uscx.us/livestream-media.",
@@ -81,7 +90,7 @@ window.CX = {
     { d: "2026-10-17", e: "2026-10-18", n: "Kings CX", p: "Deerfield Twp, OH", s: "us", c: "C1/C2", l: {"site": "https://www.kingscx.com/"} },
     { d: "2026-10-24", e: "2026-10-25", n: "Major Taylor Cross Cup", p: "Indianapolis, IN", s: "us", c: "C2", l: {"site": "https://indycycloplex.com/cross", "results": "https://cyclocross24.com/race/major-taylor-cross-cup/"} },
     { d: "2026-10-31", e: "2026-11-01", n: "Cycle-Smart Northampton", p: "Northampton, MA", s: "us", c: "C2", l: {"site": "https://www.nohocx.com/", "results": "https://cyclocross24.com/race/northampton/"} },
-    { d: "2026-11-07", e: "2026-11-08", n: "Pan-American Championships / DCCX", p: "Washington, DC", s: "champ", c: "CC/C2", l: {"site": "https://www.panamcxdc.com/", "results": "https://cyclocross24.com/race/pan-american-championships/", "yt": "https://www.youtube.com/@WideAnglePodium", "ytNote": "CXTV covered the 2025 USCX and Pan-Am races; 2026 not confirmed"} },
+    { d: "2026-11-07", e: "2026-11-08", n: "Pan-American Championships / DCCX", p: "Washington, DC", s: "champ", b: { t: "YouTube (CXTV)?", s: "last-season" }, c: "CC/C2", l: {"site": "https://www.panamcxdc.com/", "results": "https://cyclocross24.com/race/pan-american-championships/", "yt": "https://www.youtube.com/@WideAnglePodium", "ytNote": "CXTV covered the 2025 USCX and Pan-Am races; 2026 not confirmed"} },
     { d: "2026-11-14", e: "2026-11-15", n: "Boulder Cup", p: "Boulder, CO", s: "us", c: "C1/C2", l: {"site": "https://boulderjuniorcycling.org/boulder-cup/", "results": "https://cyclocross24.com/race/us-open-cyclocross/"} },
     { d: "2026-11-21", e: "2026-11-22", n: "North Carolina Grand Prix", p: "Hendersonville, NC", s: "us", c: "C2", l: {"site": "https://www.nccyclocross.com/NCGP", "results": "https://cyclocross24.com/race/north-carolina-grand-prix/"} },
     { d: "2026-12-12", e: "2026-12-13", n: "USA Cycling National Championships", p: "Fayetteville, AR", s: "nat", c: "CN", note: "Event runs Dec 9–13. Elite races on the weekend.", l: {"site": "https://cxnats.usacycling.org/", "results": "https://cyclocross24.com/race/usa-national-championships/"} },
@@ -135,7 +144,7 @@ window.CX = {
     { d: "2027-01-09", e: "2027-01-10", n: "Dutch Championships (NK)", p: "Gemert, NED", s: "nat", note: "KNWU lists Jan 9-10; elite race believed to be Jan 10 (secondary source).", l: {"site": "https://www.knwu.nl/nieuws/nk-veldrijden-2027-naar-gemert", "results": "https://cyclocross24.com/race/netherlands-national-championships/"} },
 
     // --- Championships ---
-    { d: "2026-11-07", e: "2026-11-08", n: "European Championships", p: "Zeddam, NED", s: "champ", l: {"site": "https://ek2026.nl/en/", "results": "https://cyclocross24.com/race/european-championships/"} },
+    { d: "2026-11-07", e: "2026-11-08", n: "European Championships", p: "Zeddam, NED", s: "champ", b: { t: "Unknown", s: "unknown" }, l: {"site": "https://ek2026.nl/en/", "results": "https://cyclocross24.com/race/european-championships/"} },
     { d: "2027-01-29", e: "2027-01-31", n: "World Championships", p: "Ostend, BEL", s: "champ", l: {"site": "https://www.flandersclassics.be/en/news/flanders-classics-2027-cyclo-cross-world-championships-toerisme-oostende-vzw", "results": "https://cyclocross24.com/race/world-championships/", "yt": "https://www.youtube.com/channel/UCloqTh1nPpW13LCntQglS-Q", "ytNote": "UCI streams only where no local rights holder; may be blocked in the US"} }
   ],
 

@@ -4,458 +4,93 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CX Schedule 2026-27</title>
+<meta name="description" content="2026-27 international cyclocross calendar with where to watch in the US, start times in Eastern, links, and a map.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cyclocross 2026-27: schedule and US viewing">
+<meta property="og:description" content="World Cup, Superprestige, X²O Trofee, HG Cross, championships and US races. Where to watch in the US, start times in Eastern, and a map.">
+<meta property="og:url" content="https://petexyz.github.io/cx-sched/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 2'%3E%3Crect width='1' height='2' fill='%23000'/%3E%3Crect x='1' width='1' height='2' fill='%23fae042'/%3E%3Crect x='2' width='1' height='2' fill='%23ed2939'/%3E%3C/svg%3E">
 <script>
-  // Apply the chosen theme before first paint so there is no flash.
+  // Apply the chosen theme before first paint so there is no flash. ?theme=light|dark forces one.
   try {
     var q = new URLSearchParams(location.search).get("theme"), t = (q === "light" || q === "dark") ? q : localStorage.getItem("cx-theme");
     if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
   } catch (e) {}
 </script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
-<style>
-  :root {
-    --bg: #fafaf8; --fg: #1c1f22; --muted: #5d656d; --line: #dcdfe2; --head: #eef0f2;
-    --warn: #8a5a00; --warn-bg: #fff4d6; --flagedge: rgba(0,0,0,.22); --ok: #1d7a3a;
-    color-scheme: light;
-  }
-  :root[data-theme="dark"] {
-    --bg: #15181b; --fg: #e8eaec; --muted: #9aa3ab; --line: #2c3238; --head: #1e2328;
-    --warn: #f0c56a; --warn-bg: #3a2f12; --flagedge: rgba(255,255,255,.5); --ok: #4cc26f;
-    color-scheme: dark;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #15181b; --fg: #e8eaec; --muted: #9aa3ab; --line: #2c3238; --head: #1e2328;
-      --warn: #f0c56a; --warn-bg: #3a2f12; --flagedge: rgba(255,255,255,.5); --ok: #4cc26f;
-      color-scheme: dark;
-    }
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; padding: 0 16px 64px; background: var(--bg); color: var(--fg);
-         font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { max-width: 1100px; margin: 0 auto; }
-  h1 { font-size: 24px; margin: 0 0 4px; }
-  main { padding-top: 12px; }
-
-  /* Belgian flag banner: black / yellow / red, waving (drawn in JS as one SVG) */
-  .banner { position: relative; margin: 0 -16px; height: 132px; overflow: hidden; background: transparent; }
-  .flag { position: absolute; inset: 0; }
-  .flag svg { display: block; width: 100%; height: 100%; }
-  .flag .edge { fill: none; stroke: var(--flagedge); stroke-width: 1.6; vector-effect: non-scaling-stroke; }
-  .toolbar { display: flex; justify-content: flex-end; margin: 0 0 10px; }
-  .theme-btn { font: inherit; font-size: 13px; cursor: pointer; background: var(--head); color: var(--fg);
-               border: 1px solid var(--line); border-radius: 16px; padding: 5px 14px; }
-  .theme-btn:hover { border-color: var(--muted); }
-  :root[data-theme="dark"] .leaflet-tile-pane { filter: brightness(.78) contrast(1.05); }
-  .plate { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; height: 100%; display: flex; flex-direction: column;
-           justify-content: center; align-items: flex-start; padding: 0 16px; }
-  /* No box behind the title: white text with a dark halo stays readable over black, yellow, red and the page. */
-  .plate > * { background: none; color: #fff; padding: 2px 14px; margin: 0; max-width: 100%;
-               text-shadow: 0 1px 2px rgba(0,0,0,.95), 0 0 6px rgba(0,0,0,.85), 0 0 14px rgba(0,0,0,.6); }
-  .plate h1 { font-size: 26px; }
-  .plate p { color: #fff; font-size: 14px; }
-  @media (max-width: 560px) { .banner { height: 148px; } .plate h1 { font-size: 20px; } }
-  h2 { font-size: 18px; margin: 32px 0 8px; }
-  .sub { color: var(--muted); margin: 0 0 16px; }
-  #clock { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0 0 14px; }
-  #clock div { border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; background: var(--head); }
-  #clock b { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
-  #clock span { font-size: 18px; font-variant-numeric: tabular-nums; }
-  .wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
-  table { border-collapse: collapse; width: 100%; min-width: 760px; }
-  th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { background: var(--head); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
-  tr:last-child td { border-bottom: 0; }
-  td.date, td.time { white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .loc { color: var(--muted); }
-  small { color: var(--muted); }
-  .tba { color: var(--muted); }
-  tr.past td { color: var(--muted); text-decoration: line-through; }
-  tr.past .links a { color: var(--fg); }   /* links are inline-block, so they are not struck through */
-  tr.mappable { cursor: pointer; }
-  tr.mappable:hover td { background: var(--head); }
-  .links { display: inline-block; font-size: 13px; }
-  td.links a, .leaflet-popup-content a { text-decoration: underline; text-underline-offset: 2px; }
-  .tag { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 12px; color: #fff; white-space: nowrap; }
-  .fgroup { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 8px; }
-  .fgroup > span { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); min-width: 64px; }
-  .fgroup button, .fgroup select { font: inherit; font-size: 13px; padding: 4px 10px; border: 1px solid var(--line);
-                    background: var(--bg); color: var(--fg); border-radius: 14px; cursor: pointer; }
-  .fgroup button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; }
-  #count { color: var(--muted); font-size: 13px; margin: 4px 0 10px; }
-  #map { height: 440px; border: 1px solid var(--line); border-radius: 6px; margin: 0 0 16px; background: var(--head); }
-  .mapmsg { padding: 16px; color: var(--muted); }
-  .note { background: var(--warn-bg); color: var(--warn); padding: 8px 12px; border-radius: 6px; margin: 0 0 16px; font-size: 14px; }
-  .status-listed { color: var(--ok); } .status-last-season, .status-unknown { color: var(--warn); }
-  ul { padding-left: 20px; } li { margin: 3px 0; }
-  a { color: inherit; }
-  footer { margin-top: 32px; color: var(--muted); font-size: 13px; }
-  .leaflet-popup-content { font: 13px/1.4 system-ui, sans-serif; color: #1c1f22; }
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" integrity="sha384-pmjIAcz2bAn0xukfxADbZIb3t8oRT9Sv0rvO+BR5Csr6Dhqq+nZs59P0pPKQJkEV" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" integrity="sha384-wgw+aLYNQ7dlhK47ZPK7FRACiq7ROZwgFNg0m04avm4CaXS+Z9Y7nMu8yNjBKYC+" crossorigin="anonymous">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="banner">
-  <div class="flag" id="flag" aria-hidden="true"></div>
-  <div class="plate">
-    <h1>Cyclocross 2026-27: schedule and US viewing</h1>
-    <p id="sub"></p>
+<a class="skip" href="#calendar">Skip to the calendar</a>
+
+<div class="flagbar" id="flag" aria-hidden="true"></div>
+
+<header class="page">
+  <div class="titlerow">
+    <div>
+      <h1>Cyclocross 2026-27: schedule and US viewing</h1>
+      <p id="sub"></p>
+    </div>
+    <div class="toolbar">
+      <button class="btn" id="motion" type="button"></button>
+      <button class="btn" id="theme" type="button"></button>
+    </div>
   </div>
 </header>
-<main>
-  <div class="toolbar"><button class="theme-btn" id="theme" type="button"></button></div>
-  <div id="clock" aria-live="off"></div>
-  <p class="note">Start times are US Eastern and shown only where the organizer has published them; the rest read TBA.</p>
 
-  <h2>Where to watch in the US</h2>
-  <div class="wrap"><table id="bcast"></table></div>
+<main class="page" id="main">
+  <div id="clock"></div>
+  <p class="note">Start times are US Eastern. A dash means the organizer hasn't published them yet.</p>
 
-  <h2>Calendar and map</h2>
-  <div class="fgroup" id="f-when"></div>
-  <div class="fgroup" id="f-region"></div>
-  <div class="fgroup" id="f-series"></div>
-  <div class="fgroup" id="f-view"></div>
-  <div id="count"></div>
-  <div id="map"></div>
-  <div class="wrap"><table id="cal"></table></div>
-  <p class="sub" style="margin-top:8px">Click a row to find it on the map (pins are approximate town centres). Results links appear once a race has started. *YouTube streams have conditions; hover the link for the note. The Belgian series air on Sporza and Play Sports, not YouTube.</p>
+  <section aria-labelledby="h-cal">
+    <h2 id="h-cal"><span id="calendar" tabindex="-1">Calendar and map</span></h2>
 
-  <h2>Not confirmed yet</h2>
-  <ul id="open"></ul>
+    <details class="filters" id="filters" open>
+      <summary>Filters</summary>
+      <div class="fgroup" id="f-when" role="group" aria-label="When"></div>
+      <div class="fgroup" id="f-region" role="group" aria-label="Where"></div>
+      <div class="fgroup" id="f-series" role="group" aria-label="Series"></div>
+      <div class="fgroup" id="f-view" role="group" aria-label="Map view"></div>
+    </details>
 
-  <h2>Subscription costs</h2>
-  <p class="sub">As reported in 2025-26 guides. Verify before subscribing.</p>
-  <div class="wrap"><table id="prices"></table></div>
+    <p id="count" role="status" aria-live="polite"></p>
+    <p class="sr" id="mapdesc">Interactive map of race locations. The table below lists the same races, and each row has a Map button.</p>
+    <div id="map" role="region" aria-label="Map of race locations" aria-describedby="mapdesc"></div>
+    <div class="wrap"><table id="cal" class="stack"></table></div>
+    <p class="foot">Pin shapes match the Series filters. Click a row or its Map button to find it on the map (pins are approximate town centres). Results links appear once a race has started. *YouTube streams have conditions; hover or focus the link for the note. The Belgian series air on Sporza and Play Sports, not YouTube.</p>
+  </section>
 
-  <h2>Sources</h2>
-  <ul id="sources"></ul>
+  <section aria-labelledby="h-watch">
+    <h2 id="h-watch">Where to watch in the US</h2>
+    <div class="watch" id="watch"></div>
+  </section>
+
+  <section aria-labelledby="h-open">
+    <h2 id="h-open">Not confirmed yet</h2>
+    <ul id="open"></ul>
+  </section>
+
+  <section aria-labelledby="h-prices">
+    <h2 id="h-prices">Subscription costs</h2>
+    <p class="foot" style="margin:0 0 8px">As reported in 2025-26 guides. Verify before subscribing.</p>
+    <div class="wrap"><table id="prices" class="stack"></table></div>
+  </section>
+
+  <section aria-labelledby="h-src">
+    <h2 id="h-src">Sources</h2>
+    <ul id="sources"></ul>
+  </section>
 
   <footer>Data lives in data.js.</footer>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" integrity="sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr" crossorigin="anonymous"></script>
 <script src="data.js"></script>
 <script src="time.js"></script>
-<script>
-(function () {
-  const D = window.CX;
-  const $ = id => document.getElementById(id);
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-  const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  const STATUS = { "listed": "Listed for 2026-27", "last-season": "2025-26 holder, not confirmed", "unknown": "Unresolved" };
-  const TZ = { CZE: "Europe/Prague", SCO: "Europe/London", FRA: "Europe/Paris", ESP: "Europe/Madrid", NED: "Europe/Amsterdam", BEL: "Europe/Brussels" };
-
-  const pad = n => String(n).padStart(2, "0");
-  const todayParam = new URLSearchParams(location.search).get("today") || "";
-  const now = /^\d{4}-\d{2}-\d{2}$/.test(todayParam) ? new Date(todayParam + "T12:00:00") : new Date();
-  const TODAY = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
-  const THIS_MONTH = TODAY.slice(0, 7);
-  const in30 = new Date(now.getTime() + 30 * 86400000);
-  const PLUS30 = in30.getFullYear() + "-" + pad(in30.getMonth() + 1) + "-" + pad(in30.getDate());
-
-  $("sub").textContent = "Last researched " + D.updated + ".";
-
-  const endOf = ev => ev.e || ev.d;
-  const isEurope = ev => /, [A-Z]{3}$/.test(ev.p);   // 3-letter country code; US/Canada use 2-letter state/province
-  const hasGeo = ev => !!D.geo[ev.p];
-
-  function fmtDate(d) {
-    const [y, m, day] = d.split("-").map(Number);
-    return DOW[new Date(Date.UTC(y, m - 1, day)).getUTCDay()] + " " + MON[m - 1] + " " + day;
-  }
-  function fmtRange(ev) {
-    if (!ev.e) return fmtDate(ev.d);
-    const [, m2, d2] = ev.e.split("-").map(Number);
-    return fmtDate(ev.d) + "–" + (ev.e.slice(5, 7) === ev.d.slice(5, 7) ? d2 : MON[m2 - 1] + " " + d2);
-  }
-  function etFor(ev, who) {
-    const t = D.times[ev.d + "|" + ev.s];
-    if (!t || !t[who]) return null;
-    const tz = t.tz || TZ[(ev.p.match(/([A-Z]{3})$/) || [])[1]] || "Europe/Brussels";
-    return { et: CXTime.etTime(ev.d, t[who], tz), local: t[who] };
-  }
-  function timeCell(ev, who) {
-    const r = etFor(ev, who);
-    if (!r) return '<span class="tba">TBA</span>';
-    const shift = r.et.dayShift ? " <small>(" + (r.et.dayShift > 0 ? "+" : "") + r.et.dayShift + "d)</small>" : "";
-    return esc(r.et.time) + shift + "<br><small>" + r.local + " local</small>";
-  }
-  // Links: event's own `l` over the series defaults. Results only once a race has started (a day done).
-  function linksFor(ev) { return Object.assign({}, (D.seriesLinks || {})[ev.s], ev.l || {}); }
-  function started(ev) { return ev.d < TODAY; }
-  function linksHtml(ev) {
-    const l = linksFor(ev), out = [];
-    const a = (u, t, tip) => "<a href='" + esc(u) + "' target='_blank' rel='noopener'" + (tip ? " title='" + esc(tip) + "'" : "") + ">" + t + "</a>";
-    if (l.site) out.push(a(l.site, "Site"));
-    if (l.results && started(ev)) out.push(a(l.results, "Results"));
-    if (l.yt) out.push(a(l.yt, "YouTube" + (l.ytNote ? "*" : ""), l.ytNote));
-    return out.length ? out.join(" &middot; ") : "<span class='tba'>–</span>";
-  }
-  function timeText(ev, who) {
-    const r = etFor(ev, who);
-    return r ? r.et.time + " ET" : "TBA";
-  }
-
-  // ---- Broadcast table ----
-  let h = "<tr><th>Series</th><th>US home</th><th>Status</th><th>Detail</th></tr>";
-  Object.keys(D.series).forEach(k => {
-    const b = D.broadcast[k], s = D.series[k];
-    h += "<tr><td><span class='tag' style='background:" + s.color + "'>" + esc(s.short) + "</span></td>" +
-         "<td><b>" + esc(b.primary) + "</b></td>" +
-         "<td class='status-" + b.status + "'>" + esc(STATUS[b.status]) + "</td>" +
-         "<td>" + esc(b.detail) + "<br><small>" + esc(b.fallback) + "</small></td></tr>";
-  });
-  $("bcast").innerHTML = h;
-
-  // ---- Filter state ----
-  const events = D.events.map((ev, i) => Object.assign({ i }, ev))
-                         .sort((a, b) => a.d.localeCompare(b.d) || a.s.localeCompare(b.s));
-  const state = { when: "all", month: "", region: "all", view: "auto", series: new Set(Object.keys(D.series)) };
-  // Filters can be preset from the URL, e.g. ?region=eu&series=sp,x2o&when=pick&month=2026-12
-  (function readUrl() {
-    const q = new URLSearchParams(location.search);
-    if (["all", "upcoming", "month", "30", "pick"].includes(q.get("when"))) state.when = q.get("when");
-    if (/^\d{4}-\d{2}$/.test(q.get("month") || "")) state.month = q.get("month");
-    if (["all", "eu", "na"].includes(q.get("region"))) state.region = q.get("region");
-    if (["auto", "eu", "na", "world"].includes(q.get("view"))) state.view = q.get("view");
-    if (q.get("series")) {
-      const keys = q.get("series").split(",").filter(k => D.series[k]);
-      if (keys.length) state.series = new Set(keys);
-    }
-  })();
-  function writeUrl() {
-    try {
-      const q = new URLSearchParams();
-      if (state.when !== "all") q.set("when", state.when);
-      if (state.when === "pick") q.set("month", state.month);
-      if (state.region !== "all") q.set("region", state.region);
-      if (state.view !== "auto") q.set("view", state.view);
-      if (state.series.size !== Object.keys(D.series).length) q.set("series", [...state.series].join(","));
-      history.replaceState(null, "", location.pathname + (q.toString() ? "?" + q : ""));
-    } catch (e) { /* file:// or sandboxed frame: skip */ }
-  }
-  const months = [...new Set(events.map(e => e.d.slice(0, 7)))].sort();
-
-  function passes(ev) {
-    if (!state.series.has(ev.s)) return false;
-    if (state.region === "eu" && !isEurope(ev)) return false;
-    if (state.region === "na" && isEurope(ev)) return false;
-    if (state.when === "month" && ev.d.slice(0, 7) !== THIS_MONTH && endOf(ev).slice(0, 7) !== THIS_MONTH) return false;
-    if (state.when === "30" && (endOf(ev) < TODAY || ev.d > PLUS30)) return false;
-    if (state.when === "upcoming" && endOf(ev) < TODAY) return false;
-    if (state.when === "pick" && ev.d.slice(0, 7) !== state.month) return false;
-    return true;
-  }
-
-  function chip(label, pressed, onclick, color) {
-    const b = document.createElement("button");
-    b.innerHTML = (color ? "<span class='dot' style='background:" + color + "'></span>" : "") + esc(label);
-    b.setAttribute("aria-pressed", pressed);
-    b.onclick = onclick;
-    return b;
-  }
-
-  function renderFilters() {
-    const w = $("f-when"); w.innerHTML = "<span>When</span>";
-    [["all", "All"], ["upcoming", "Upcoming"], ["month", "This month"], ["30", "Next 30 days"]].forEach(([k, l]) =>
-      w.appendChild(chip(l, state.when === k, () => { state.when = k; update(); })));
-    const sel = document.createElement("select");
-    sel.setAttribute("aria-label", "Pick a month");
-    sel.innerHTML = "<option value=''>Pick a month…</option>" + months.map(m => {
-      const [y, mo] = m.split("-").map(Number);
-      return "<option value='" + m + "'" + (state.when === "pick" && state.month === m ? " selected" : "") + ">" + MON[mo - 1] + " " + y + "</option>";
-    }).join("");
-    sel.onchange = () => { if (sel.value) { state.when = "pick"; state.month = sel.value; } else { state.when = "all"; } update(); };
-    w.appendChild(sel);
-
-    const r = $("f-region"); r.innerHTML = "<span>Where</span>";
-    [["all", "Everywhere"], ["eu", "Europe"], ["na", "North America"]].forEach(([k, l]) =>
-      r.appendChild(chip(l, state.region === k, () => { state.region = k; update(); })));
-
-    const v = $("f-view"); v.innerHTML = "<span>Map view</span>";
-    [["auto", "Auto (follow filters)"], ["eu", "Europe"], ["na", "North America"], ["world", "Both"]].forEach(([k, l]) =>
-      v.appendChild(chip(l, state.view === k, () => { state.view = k; update(); })));
-    v.insertAdjacentHTML("beforeend", "<small id='viewnote'></small>");
-
-    const s = $("f-series"); s.innerHTML = "<span>Series</span>";
-    Object.keys(D.series).forEach(k => s.appendChild(chip(D.series[k].short, state.series.has(k),
-      () => { state.series.has(k) ? state.series.delete(k) : state.series.add(k); update(); }, D.series[k].color)));
-  }
-
-  // ---- Map ----
-  let map = null, layer = null, markers = {};
-  function initMap() {
-    if (typeof L === "undefined") {
-      $("map").innerHTML = "<div class='mapmsg'>The map could not load (needs an internet connection for the Leaflet library and map tiles). The table below still works.</div>";
-      return;
-    }
-    map = L.map("map", { scrollWheelZoom: false }).setView([45, -20], 3);
-    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18, attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
-    }).addTo(map);
-    layer = L.layerGroup().addTo(map);
-  }
-
-  function popupHtml(ev) {
-    const s = D.series[ev.s];
-    return "<b>" + esc(ev.n) + "</b><br>" + esc(ev.p) + "<br>" + esc(fmtRange(ev)) +
-           "<br><span style='color:" + s.color + "'>&#9679;</span> " + esc(s.short) +
-           "<br>Women: " + esc(timeText(ev, "w")) + "<br>Men: " + esc(timeText(ev, "m")) +
-           "<br>US: " + esc(D.broadcast[ev.s].primary) +
-           "<br>" + linksHtml(ev);
-  }
-
-  function updateMap(list) {
-    if (!map) return;
-    layer.clearLayers(); markers = {};
-    const used = {}, pts = [], ptsEu = [], ptsNa = [];
-    list.filter(hasGeo).forEach(ev => {
-      const base = D.geo[ev.p], key = base.join(",");
-      const k = used[key] = (used[key] || 0);
-      used[key]++;
-      const ll = [base[0], base[1] + k * 0.03];   // nudge co-located events apart
-      const m = L.circleMarker(ll, {
-        radius: 8, weight: 2, color: "#fff", fillColor: D.series[ev.s].color, fillOpacity: endOf(ev) < TODAY ? .45 : .95
-      }).bindPopup(popupHtml(ev)).addTo(layer);
-      markers[ev.i] = m; pts.push(ll); (isEurope(ev) ? ptsEu : ptsNa).push(ll);
-    });
-    // Focus: a fixed view if chosen; otherwise the continent holding most of the visible pins,
-    // so a mixed filter (e.g. December: US Nationals plus the Belgian rounds) is not zoomed out to the Atlantic.
-    let target = pts, note = "";
-    if (state.view === "eu") target = ptsEu.length ? ptsEu : pts;
-    else if (state.view === "na") target = ptsNa.length ? ptsNa : pts;
-    else if (state.view === "auto" && ptsEu.length && ptsNa.length) {
-      const eu = ptsEu.length >= ptsNa.length;
-      target = eu ? ptsEu : ptsNa;
-      note = " Focused on " + (eu ? "Europe" : "North America") + " (" + target.length + " of " + pts.length +
-             " pins). Pick Both to see everything.";
-    }
-    const vn = $("viewnote"); if (vn) vn.textContent = note;
-    if (target.length) map.fitBounds(L.latLngBounds(target).pad(0.2), { maxZoom: 9 });
-  }
-
-  // ---- Table ----
-  function renderCal(list) {
-    let r = "<tr><th>Date</th><th>Race</th><th>Where</th><th>Series</th><th>Women (ET)</th><th>Men (ET)</th><th>US broadcast</th></tr>";
-    if (!list.length) r += "<tr><td colspan='7' class='tba'>No races match these filters.</td></tr>";
-    list.forEach(ev => {
-      const s = D.series[ev.s], b = D.broadcast[ev.s];
-      const cls = (endOf(ev) < TODAY ? "past " : "") + (hasGeo(ev) ? "mappable" : "");
-      r += "<tr class='" + cls + "' data-i='" + ev.i + "'><td class='date'>" + esc(fmtRange(ev)) + "</td>" +
-           "<td>" + esc(ev.n) + (ev.note ? "<br><small>" + esc(ev.note) + "</small>" : "") +
-           "<br><span class='links'>" + linksHtml(ev) + "</span></td>" +
-           "<td class='loc'>" + esc(ev.p) + "</td>" +
-           "<td><span class='tag' style='background:" + s.color + "'>" + esc(s.short) + "</span></td>" +
-           "<td class='time'>" + timeCell(ev, "w") + "</td>" +
-           "<td class='time'>" + timeCell(ev, "m") + "</td>" +
-           "<td>" + esc(b.primary) + "</td></tr>";
-    });
-    $("cal").innerHTML = r;
-  }
-
-  $("cal").addEventListener("click", e => {
-    if (e.target.closest("a")) return;   // let links open normally
-    const tr = e.target.closest("tr[data-i]");
-    if (!tr || !map) return;
-    const m = markers[tr.dataset.i];
-    if (!m) return;
-    $("map").scrollIntoView({ behavior: "smooth", block: "center" });
-    map.setView(m.getLatLng(), Math.max(map.getZoom(), 9));
-    m.openPopup();
-  });
-
-  function update() {
-    const list = events.filter(passes);
-    renderFilters();
-    $("count").textContent = list.length + " of " + events.length + " races" +
-      (list.filter(hasGeo).length !== list.length ? " (" + list.filter(hasGeo).length + " on the map)" : "");
-    renderCal(list);
-    updateMap(list);
-    writeUrl();
-  }
-
-  // ---- Light / dark toggle. The choice is remembered; with no choice it follows the system. ----
-  (function themeToggle() {
-    const root = document.documentElement, btn = $("theme"), mq = matchMedia("(prefers-color-scheme: dark)");
-    const current = () => root.getAttribute("data-theme") || (mq.matches ? "dark" : "light");
-    function label() {
-      const dark = current() === "dark";
-      btn.textContent = dark ? "\u2600 Light mode" : "\u263E Dark mode";
-      btn.setAttribute("aria-label", "Switch to " + (dark ? "light" : "dark") + " mode");
-    }
-    if (!root.getAttribute("data-theme")) root.setAttribute("data-theme", current());   // make the choice explicit
-    btn.onclick = () => {
-      const next = current() === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      try { localStorage.setItem("cx-theme", next); } catch (e) {}
-      label();
-    };
-    label();
-  })();
-
-  // ---- Waving flag: one SVG. The flag's top and bottom edges follow a travelling sine wave, and a
-  // repeating light/dark gradient moves with it so the cloth looks folded. Stripes: black, yellow, red.
-  (function waveFlag() {
-    const W = 1200, H = 132, TOP = 24, BOT = 108, AMP = 9, LAMBDA = 300, PERIOD = 2800;
-    const K = 2 * Math.PI / LAMBDA, OMEGA = 2 * Math.PI / PERIOD;
-    $("flag").innerHTML =
-      "<svg viewBox='0 0 " + W + " " + H + "' preserveAspectRatio='none'>" +
-      "<defs><clipPath id='flagclip'><path id='flagpath'/></clipPath>" +
-      "<linearGradient id='fold' gradientUnits='userSpaceOnUse' spreadMethod='repeat' y1='0' y2='0'>" +
-      "<stop offset='0' stop-color='#000' stop-opacity='.26'/><stop offset='.5' stop-color='#fff' stop-opacity='.13'/>" +
-      "<stop offset='1' stop-color='#000' stop-opacity='.26'/></linearGradient></defs>" +
-      "<g clip-path='url(#flagclip)'>" +
-      "<rect x='0' width='" + W / 3 + "' height='" + H + "' fill='#000'/>" +
-      "<rect x='" + W / 3 + "' width='" + W / 3 + "' height='" + H + "' fill='#fae042'/>" +
-      "<rect x='" + 2 * W / 3 + "' width='" + W / 3 + "' height='" + H + "' fill='#ed2939'/>" +
-      "<rect width='" + W + "' height='" + H + "' fill='url(#fold)'/></g>" +
-      "<path id='flagedge' class='edge'/></svg>";
-    const path = $("flagpath"), edge = $("flagedge"), fold = $("fold");
-    function draw(t) {
-      const ph = OMEGA * t, top = [], bot = [];
-      for (let x = 0; x <= W; x += 15) {
-        const dy = AMP * Math.sin(K * x - ph);
-        top.push(x + "," + (TOP + dy).toFixed(1));
-        bot.unshift(x + "," + (BOT + dy).toFixed(1));
-      }
-      const d = "M" + top.join(" L") + " L" + bot.join(" L") + " Z";
-      path.setAttribute("d", d); edge.setAttribute("d", d);
-      const shift = ph / K;                       // moves the folds along with the wave
-      fold.setAttribute("x1", shift); fold.setAttribute("x2", shift + LAMBDA);
-    }
-    const fixed = new URLSearchParams(location.search).get("flagt");   // ?flagt=ms draws one fixed frame (for testing)
-    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (fixed !== null) { draw(+fixed || 0); return; }
-    draw(0);
-    if (still) return;
-    (function tick(now) { if (!document.hidden) draw(now); requestAnimationFrame(tick); })(performance.now());
-  })();
-
-  // ---- Clock: your time (Eastern), Belgian race time, and the browser's zone if different ----
-  function renderClock() {
-    const d = new Date();
-    // en-US prints Belgian time as "GMT+2"; en-GB gives "CEST"/"CET". Use it for the zone label only.
-    const zoneName = tz => new Intl.DateTimeFormat(tz.startsWith("Europe/") ? "en-GB" : "en-US", { timeZone: tz, timeZoneName: "short" })
-      .formatToParts(d).find(p => p.type === "timeZoneName").value;
-    const fmt = tz => new Intl.DateTimeFormat("en-US", { timeZone: tz, weekday: "short", month: "short", day: "numeric",
-      hour: "numeric", minute: "2-digit" }).format(d).replace(/\u202f/g, " ") + " " + zoneName(tz);
-    const local = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const boxes = [["Your time (Eastern)", fmt("America/New_York")], ["Central Europe", fmt("Europe/Brussels")]];
-    if (local && local !== "America/New_York" && local !== "Europe/Brussels") boxes.push(["Your browser's zone", fmt(local)]);
-    $("clock").innerHTML = boxes.map(b => "<div><b>" + esc(b[0]) + "</b><span>" + esc(b[1]) + "</span></div>").join("");
-  }
-  renderClock();
-  setInterval(renderClock, 15000);
-
-  initMap();
-  update();
-
-  $("open").innerHTML = D.open.map(x => "<li>" + esc(x) + "</li>").join("");
-  $("prices").innerHTML = "<tr><th>Service</th><th>Cost</th><th>Note</th></tr>" +
-    D.prices.map(p => "<tr><td>" + esc(p.name) + "</td><td>" + esc(p.cost) + "</td><td>" + esc(p.note) + "</td></tr>").join("");
-  $("sources").innerHTML = D.sources.map(s => "<li><a href='" + esc(s[1]) + "'>" + esc(s[0]) + "</a></li>").join("");
-})();
-</script>
+<script src="app.js"></script>
 </body>
 </html>
