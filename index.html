@@ -70,10 +70,11 @@
   .loc { color: var(--muted); }
   small { color: var(--muted); }
   .tba { color: var(--muted); }
-  tr.past td { opacity: .5; }
+  tr.past td { color: var(--muted); text-decoration: line-through; }
+  tr.past .links a { color: var(--fg); }   /* links are inline-block, so they are not struck through */
   tr.mappable { cursor: pointer; }
   tr.mappable:hover td { background: var(--head); }
-  .links { font-size: 13px; margin-top: 2px; }
+  .links { display: inline-block; font-size: 13px; }
   td.links a, .leaflet-popup-content a { text-decoration: underline; text-underline-offset: 2px; }
   .tag { display: inline-block; padding: 1px 7px; border-radius: 10px; font-size: 12px; color: #fff; white-space: nowrap; }
   .fgroup { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 8px; }
@@ -146,7 +147,8 @@
   const TZ = { CZE: "Europe/Prague", SCO: "Europe/London", FRA: "Europe/Paris", ESP: "Europe/Madrid", NED: "Europe/Amsterdam", BEL: "Europe/Brussels" };
 
   const pad = n => String(n).padStart(2, "0");
-  const now = new Date();
+  const todayParam = new URLSearchParams(location.search).get("today") || "";
+  const now = /^\d{4}-\d{2}-\d{2}$/.test(todayParam) ? new Date(todayParam + "T12:00:00") : new Date();
   const TODAY = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
   const THIS_MONTH = TODAY.slice(0, 7);
   const in30 = new Date(now.getTime() + 30 * 86400000);
@@ -342,7 +344,7 @@
       const cls = (endOf(ev) < TODAY ? "past " : "") + (hasGeo(ev) ? "mappable" : "");
       r += "<tr class='" + cls + "' data-i='" + ev.i + "'><td class='date'>" + esc(fmtRange(ev)) + "</td>" +
            "<td>" + esc(ev.n) + (ev.note ? "<br><small>" + esc(ev.note) + "</small>" : "") +
-           "<div class='links'>" + linksHtml(ev) + "</div></td>" +
+           "<br><span class='links'>" + linksHtml(ev) + "</span></td>" +
            "<td class='loc'>" + esc(ev.p) + "</td>" +
            "<td><span class='tag' style='background:" + s.color + "'>" + esc(s.short) + "</span></td>" +
            "<td class='time'>" + timeCell(ev, "w") + "</td>" +
