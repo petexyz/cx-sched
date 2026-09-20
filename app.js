@@ -191,7 +191,7 @@
   }
   function renderCal(list) {
     $("cal").innerHTML = "<caption class='sr'>Race calendar</caption><thead><tr>" +
-      ["Date", "Race", "Where", "Series", "Start (ET)", "US broadcast", "Best paired with (a joke)"].map(h => "<th scope='col'>" + h + "</th>").join("") + "</tr></thead><tbody>" +
+      ["Date", "Race", "Where", "Series", "Start (ET)", "US broadcast", "Best paired with"].map(h => "<th scope='col'>" + h + "</th>").join("") + "</tr></thead><tbody>" +
       (list.length ? list.map(rowHtml).join("") : "<tr><td colspan='7' class='tba' data-label=''>No races match these filters.</td></tr>") + "</tbody>";
   }
   function renderCount(list) {
@@ -214,7 +214,7 @@
     cluster = L.markerClusterGroup({ maxClusterRadius: 30, showCoverageOnHover: false });
     map.addLayer(cluster);
   }
-  function pairPopup(ev) { const p = (D.pairings || {})[ev.n]; return p ? "<br>Pairs with: " + esc(p.beer) + " + " + esc(p.bourbon) + " (a joke)" : ""; }
+  function pairPopup(ev) { const p = (D.pairings || {})[ev.n]; return p ? "<br>Pairs with: " + esc(p.beer) + " + " + esc(p.bourbon) : ""; }
   function popupHtml(ev) {
     return "<b>" + esc(ev.n) + "</b><br>" + esc(ev.p) + "<br>" + esc(fmtRange(ev)) + "<br>" + esc(D.series[ev.s].short) +
       "<br>Women: " + esc(timeText(ev, "w")) + "<br>Men: " + esc(timeText(ev, "m")) + "<br>US: " + esc(bcast(ev).t) + pairPopup(ev) + "<br>" + linksHtml(ev, false);
