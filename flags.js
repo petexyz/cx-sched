@@ -57,10 +57,23 @@
     const open = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='";
     if (id === "be") return open + "0 0 3 2'>" + BE.map((c, i) => "<rect x='" + i + "' width='1' height='2' fill='" + c + "'/>").join("") + "</svg>";
     if (id === "nl") return open + "0 0 3 2'>" + NL.map((c, i) => "<rect y='" + (i * 2 / 3).toFixed(3) + "' width='3' height='0.667' fill='" + c + "'/>").join("") + "</svg>";
+    // The real US flag (not the banner layout): 13 stripes, a canton 7 stripes tall and 0.76 of the height wide,
+    // and the official nine rows of 6 and 5 stars. Drawn as one path so the favicon stays small.
     const stripes = Array.from({ length: 13 }, (_, i) => "<rect y='" + (i * 10 / 13).toFixed(3) + "' width='19' height='0.77' fill='" + (i % 2 ? US.white : US.red) + "'/>").join("");
-    const dots = [];
-    for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) dots.push("<circle cx='" + (1.3 + col * 1.85).toFixed(2) + "' cy='" + (2 + row * 3).toFixed(1) + "' r='0.7' fill='" + US.white + "'/>");
-    return open + "0 0 19 10'>" + stripes + "<rect width='6.33' height='10' fill='" + US.blue + "'/>" + dots.join("") + "</svg>";
+    const cw = 7.6, ch = 10 * 7 / 13, r = 0.308;
+    let d = "";
+    for (let row = 0; row < 9; row++) {
+      const n = row % 2 === 0 ? 6 : 5;
+      for (let col = 0; col < n; col++) {
+        const cx = cw * (row % 2 === 0 ? 2 * col + 1 : 2 * col + 2) / 12, cy = ch * (row + 1) / 10;
+        for (let i = 0; i < 10; i++) {
+          const ang = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r * 0.382 : r;
+          d += (i ? "L" : "M") + (cx + rad * Math.cos(ang)).toFixed(2) + " " + (cy + rad * Math.sin(ang)).toFixed(2);
+        }
+        d += "Z";
+      }
+    }
+    return open + "0 0 19 10'>" + stripes + "<rect width='" + cw + "' height='" + ch.toFixed(3) + "' fill='" + US.blue + "'/><path d='" + d + "' fill='" + US.white + "'/></svg>";
   }
 
   // A random flag index, never the one shown last time (prev: that index, or anything else if unknown).
