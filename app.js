@@ -242,6 +242,12 @@
       target = inEu ? eu : na;
       note = " Focused on " + (inEu ? "Europe" : "North America") + " (" + target.length + " of " + all.length + " pins). Pick Both to see everything.";
     }
+    if (!all.length) {                                             // nothing to show: don't leave the map stuck on the last view
+      const keys = Object.keys(D.geo), inEu = k => /, [A-Z]{3}$/.test(k);
+      const region = state.view === "na" ? "North America" : state.view === "world" ? "everything" : "Europe";
+      target = keys.filter(k => region === "everything" || (region === "Europe") === inEu(k)).map(k => D.geo[k]);
+      note = " No races match, so the map is showing " + region + ".";
+    }
     const vn = $("viewnote"); if (vn) vn.textContent = note;
     if (target.length) map.fitBounds(L.latLngBounds(target).pad(0.2), { maxZoom: 9 });
   }
