@@ -7,5 +7,5 @@ Live page: https://petexyz.github.io/cx-sched/
 Open `index.html` locally to run it. No build step; the map needs an internet connection.
 
 - `data.js`: all the data
-- `app.js`, `style.css`: the page
+- `app.js`, `style.css`, `flags.js`: the page and its rotating flag banner
 - `time.js`: converts venue-local start times to US Eastern

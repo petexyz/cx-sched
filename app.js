@@ -1,5 +1,5 @@
 // CX schedule 2026-27: renders the page from data.js. No framework, no build step.
-// Test/preview URL parameters: ?theme=light|dark, ?today=YYYY-MM-DD, ?flagt=<ms> (draw one fixed flag frame).
+// Test/preview URL parameters: ?theme=light|dark, ?today=YYYY-MM-DD, ?flag=be|nl|us, ?flagt=<ms> (draw one fixed flag frame).
 (function () {
   "use strict";
   const D = window.CX;
@@ -102,7 +102,7 @@
   // ---- Filter state (can be preset from the URL) ----
   const events = D.events.map((ev, i) => Object.assign({ i }, ev)).sort((a, b) => a.d.localeCompare(b.d) || a.s.localeCompare(b.s));
   const months = [...new Set(events.map(e => e.d.slice(0, 7)))].sort();
-  const state = { when: "upcoming", month: "", region: "all", view: "auto", series: new Set(Object.keys(D.series)) };
+  const state = { when: "30", month: "", region: "all", view: "auto", series: new Set(Object.keys(D.series)) };
   (function readUrl() {
     if (["all", "upcoming", "month", "30", "pick"].includes(params.get("when"))) state.when = params.get("when");
     if (/^\d{4}-\d{2}$/.test(params.get("month") || "")) state.month = params.get("month");
@@ -116,7 +116,7 @@
   function writeUrl() {
     try {
       const q = new URLSearchParams();
-      if (state.when !== "upcoming") q.set("when", state.when);
+      if (state.when !== "30") q.set("when", state.when);
       if (state.when === "pick") q.set("month", state.month);
       if (state.region !== "all") q.set("region", state.region);
       if (state.view !== "auto") q.set("view", state.view);
@@ -147,14 +147,14 @@
   let monthSelect;
   (function buildFilters() {
     const w = $("f-when"); label(w, "When");
-    [["upcoming", "Upcoming"], ["all", "All (incl. finished)"], ["month", "This month"], ["30", "Next 30 days"]].forEach(([k, l]) =>
+    [["30", "Next 30 days"], ["upcoming", "Upcoming"], ["month", "This month"], ["all", "All (incl. finished)"]].forEach(([k, l]) =>
       chip(w, esc(l), () => state.when === k, () => { state.when = k; update(); }));
     monthSelect = document.createElement("select");
     monthSelect.className = "chip"; monthSelect.setAttribute("aria-label", "Pick a month");
     monthSelect.innerHTML = "<option value=''>Pick a month…</option>" + months.map(m => {
       const [y, mo] = m.split("-").map(Number); return "<option value='" + m + "'>" + MON[mo - 1] + " " + y + "</option>";
     }).join("");
-    monthSelect.onchange = () => { if (monthSelect.value) { state.when = "pick"; state.month = monthSelect.value; } else state.when = "upcoming"; update(); };
+    monthSelect.onchange = () => { if (monthSelect.value) { state.when = "pick"; state.month = monthSelect.value; } else state.when = "30"; update(); };
     w.appendChild(monthSelect);
 
     const r = $("f-region"); label(r, "Where");
@@ -192,12 +192,14 @@
   function renderCal(list) {
     $("cal").innerHTML = "<caption class='sr'>Race calendar</caption><thead><tr>" +
       ["Date", "Race", "Where", "Series", "Start (ET)", "US Broadcast", "Best Paired With"].map(h => "<th scope='col'>" + h + "</th>").join("") + "</tr></thead><tbody>" +
-      (list.length ? list.map(rowHtml).join("") : "<tr><td colspan='7' class='tba' data-label=''>No races match these filters.</td></tr>") + "</tbody>";
+      (list.length ? list.map(rowHtml).join("") : "<tr><td colspan='7' class='tba' data-label=''>" + (state.when === "30" ? "No races in the next 30 days. Try Upcoming or All." : "No races match these filters.") + "</td></tr>") + "</tbody>";
   }
   function renderCount(list) {
-    const hidden = state.when === "upcoming" ? events.filter(e => passes(e, true) && finished(e)).length : 0;
-    $("count").innerHTML = list.length + " of " + events.length + " races" +
-      (hidden ? " &middot; " + hidden + " finished hidden <button type='button' data-showall>Show them</button>" : "");
+    const finishedN = events.filter(e => passes(e, true) && finished(e)).length;
+    let extra = "";
+    if (state.when === "30") extra = " &middot; next 30 days <button type='button' data-when='upcoming'>Show all upcoming</button>";
+    else if (state.when === "upcoming" && finishedN) extra = " &middot; " + finishedN + " finished hidden <button type='button' data-when='all'>Show them</button>";
+    $("count").innerHTML = list.length + " of " + events.length + " races" + extra;
   }
 
   // ---- Map: keyboard-reachable pins with distinct shapes, clustered where dense ----
@@ -254,7 +256,7 @@
     if (e.target.closest("a, button")) return;   // links open normally
     const tr = e.target.closest("tr[data-i]"); if (tr) focusOnMap(tr.dataset.i);
   });
-  $("count").addEventListener("click", e => { if (e.target.closest("[data-showall]")) { state.when = "all"; update(); } });
+  $("count").addEventListener("click", e => { const b = e.target.closest("[data-when]"); if (b) { state.when = b.dataset.when; update(); } });
 
   function update() {
     const list = events.filter(ev => passes(ev));
@@ -286,33 +288,75 @@
     paint();
   })();
 
-  // ---- Waving flag: black / yellow / red. One SVG whose edges follow a travelling sine wave, with moving
-  // fold shading. It flies for 5 seconds (time on screen only, ~30 fps) and then freezes on its last frame. ----
+  // ---- Random flag banner: Belgium, the Netherlands, the United States (a swallowtail streamer). ----
+  // Each visit shows a random flag, never the same one twice in a row (remembered per browser); ?flag=be|nl|us forces one. The favicon
+  // matches. The cloth is drawn on a canvas in 2 px vertical slices, each shifted along a travelling sine wave, with
+  // light and shade for the folds. It flies for 5 seconds (time on screen only, ~30 fps), then freezes on its last frame.
   (function waveFlag() {
-    const W = 1200, H = 96, TOP = 16, BOT = 80, AMP = 8, LAMBDA = 300, PERIOD = 2800, STEP = 33, FLY_MS = 5000;
-    const K = 2 * Math.PI / LAMBDA, OMEGA = 2 * Math.PI / PERIOD;
-    $("flag").innerHTML =
-      "<svg viewBox='0 0 " + W + " " + H + "' preserveAspectRatio='none'>" +
-      "<defs><clipPath id='flagclip'><path id='flagpath'/></clipPath>" +
-      "<linearGradient id='fold' gradientUnits='userSpaceOnUse' spreadMethod='repeat' y1='0' y2='0'>" +
-      "<stop offset='0' stop-color='#000' stop-opacity='.26'/><stop offset='.5' stop-color='#fff' stop-opacity='.13'/>" +
-      "<stop offset='1' stop-color='#000' stop-opacity='.26'/></linearGradient></defs>" +
-      "<g clip-path='url(#flagclip)'>" +
-      "<rect x='0' width='" + W / 3 + "' height='" + H + "' fill='#000'/>" +
-      "<rect x='" + W / 3 + "' width='" + W / 3 + "' height='" + H + "' fill='#fae042'/>" +
-      "<rect x='" + 2 * W / 3 + "' width='" + W / 3 + "' height='" + H + "' fill='#ed2939'/>" +
-      "<rect width='" + W + "' height='" + H + "' fill='url(#fold)'/></g><path id='flagedge' class='edge'/></svg>";
-    const path = $("flagpath"), edge = $("flagedge"), fold = $("fold");
-    function draw(t) {
-      const ph = OMEGA * t, top = [], bot = [];
-      for (let x = 0; x <= W; x += 15) {
-        const dy = AMP * Math.sin(K * x - ph);
-        top.push(x + "," + (TOP + dy).toFixed(1)); bot.unshift(x + "," + (BOT + dy).toFixed(1));
-      }
-      const d = "M" + top.join(" L") + " L" + bot.join(" L") + " Z";
-      path.setAttribute("d", d); edge.setAttribute("d", d);
-      const shift = ph / K; fold.setAttribute("x1", shift); fold.setAttribute("x2", shift + LAMBDA);
+    const F = window.CXFlags;
+    let id = params.get("flag");
+    if (!F.order.includes(id)) {
+      const n = F.pick(parseInt(store.get("cx-flag"), 10));           // random, but never the same flag twice in a row
+      store.set("cx-flag", String(n));
+      id = F.order[n];
     }
+    document.documentElement.setAttribute("data-flag", id);
+    const icon = document.querySelector("link[rel~='icon']");
+    if (icon) icon.href = "data:image/svg+xml," + encodeURIComponent(F.favicon(id));
+
+    const host = $("flag"), canvas = document.createElement("canvas"), ctx = canvas.getContext("2d");
+    canvas.style.cssText = "display:block;width:100%;height:100%";
+    host.appendChild(canvas);
+    const SW = 2, LAMBDA = 300, PERIOD = 2800, STEP = 33, FLY_MS = 5000;
+    const K = 2 * Math.PI / LAMBDA, OMEGA = 2 * Math.PI / PERIOD, streamer = F.info[id].streamer;
+    let W = 0, H = 0, BH = 0, TOP = 0, AMP = 0, dpr = 1, notch = 0, artCv = null, lastT = 0, edge = "rgba(0,0,0,.22)";
+    // A streamer's free end flutters more than the end at the pole.
+    const ampAt = x => streamer ? AMP * (0.45 + 0.9 * x / W) : AMP;
+
+    function starPath(a, cx, cy, r) {
+      a.beginPath();
+      for (let i = 0; i < 10; i++) { const ang = -Math.PI / 2 + i * Math.PI / 5, rad = i % 2 ? r * 0.382 : r; a.lineTo(cx + rad * Math.cos(ang), cy + rad * Math.sin(ang)); }
+      a.closePath(); a.fill();
+    }
+    function build() {
+      W = Math.max(1, host.clientWidth); H = Math.max(1, host.clientHeight); dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      AMP = H / 12; BH = Math.round(H * F.info[id].bandRatio); TOP = (H - BH) / 2; notch = streamer ? F.notchLength(W) : 0;
+      artCv = document.createElement("canvas"); artCv.width = Math.round(W * dpr); artCv.height = Math.round(BH * dpr);
+      const a = artCv.getContext("2d"); a.scale(dpr, dpr);
+      F.art(id, W, BH).forEach(o => { a.fillStyle = o.c; if (o.t === "rect") a.fillRect(o.x, o.y, o.w, o.h); else starPath(a, o.x, o.y, o.r); });
+      draw(lastT);
+    }
+    // One 2 px slice of the flag: sy/sh pick the part of the artwork; c (-1..1) is the fold light/shade.
+    function piece(x, y, sy, sh, c) {
+      if (sh <= 0) return;
+      ctx.drawImage(artCv, x * dpr, sy * dpr, SW * dpr, sh * dpr, x, y + sy, SW, sh);
+      ctx.fillStyle = c > 0 ? "rgba(0,0,0," + (0.26 * c).toFixed(3) + ")" : "rgba(255,255,255," + (-0.13 * c).toFixed(3) + ")";
+      ctx.fillRect(x, y + sy, SW, sh);
+    }
+    function line(pts) { if (!pts.length) return; ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke(); }
+    function draw(t) {
+      lastT = t; if (!artCv) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      const ph = OMEGA * t, top = [], bot = [], nu = [], nl = [];
+      for (let x = 0; x < W; x += SW) {
+        const c = Math.cos(K * x - ph), y = TOP + ampAt(x) * Math.sin(K * x - ph);
+        if (notch && x >= W - notch) {                                 // swallowtail: cut a V out of the free end
+          const h = (x - (W - notch)) / notch * BH / 2;
+          piece(x, y, 0, BH / 2 - h, c); piece(x, y, BH / 2 + h, BH / 2 - h, c);
+          nu.push([x, y + BH / 2 - h]); nl.push([x, y + BH / 2 + h]);
+        } else piece(x, y, 0, BH, c);
+        top.push([x, y]); bot.push([x, y + BH]);
+      }
+      ctx.strokeStyle = edge; ctx.lineWidth = 1.6; ctx.lineJoin = "round";
+      line(top); line(bot); line(nu); line(nl);
+    }
+    function readEdge() { edge = getComputedStyle(document.documentElement).getPropertyValue("--flagedge").trim() || edge; draw(lastT); }
+    readEdge(); build();
+    if ("ResizeObserver" in window) new ResizeObserver(() => { if (host.clientWidth !== W || host.clientHeight !== H) build(); }).observe(host);
+    else window.addEventListener("resize", build);
+    new MutationObserver(readEdge).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });   // outline colour follows the theme
+
     const fixed = params.get("flagt");
     let inView = true, raf = 0, last = 0, prev = 0, flown = 0;
     function loop(now) {
@@ -325,7 +369,7 @@
     function sync() { if (flown < FLY_MS && inView && !document.hidden && !raf) raf = requestAnimationFrame(loop); }
     draw(fixed !== null ? (+fixed || 0) : 0);
     if (fixed !== null || reduceMq.matches) return;                  // preview frame, or the viewer asked for less motion
-    if ("IntersectionObserver" in window) new IntersectionObserver(es => { inView = es[0].isIntersecting; sync(); }).observe($("flag"));
+    if ("IntersectionObserver" in window) new IntersectionObserver(es => { inView = es[0].isIntersecting; sync(); }).observe(host);
     document.addEventListener("visibilitychange", sync);
     sync();
   })();
