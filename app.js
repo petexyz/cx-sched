@@ -288,7 +288,7 @@
     paint();
   })();
 
-  // ---- Random flag banner: Belgium, the Netherlands, the United States (a swallowtail streamer). ----
+  // ---- Random flag banner: Belgium, the Netherlands, the United States (Stars and Stripes). ----
   // Each visit shows a random flag, never the same one twice in a row (remembered per browser); ?flag=be|nl|us forces one. The favicon
   // matches. The cloth is drawn on a canvas in 2 px vertical slices, each shifted along a travelling sine wave, with
   // light and shade for the folds. It flies for 5 seconds (time on screen only, ~30 fps), then freezes on its last frame.
@@ -308,10 +308,10 @@
     canvas.style.cssText = "display:block;width:100%;height:100%";
     host.appendChild(canvas);
     const SW = 2, LAMBDA = 300, PERIOD = 2800, STEP = 33, FLY_MS = 5000;
-    const K = 2 * Math.PI / LAMBDA, OMEGA = 2 * Math.PI / PERIOD, streamer = F.info[id].streamer;
-    let W = 0, H = 0, BH = 0, TOP = 0, AMP = 0, dpr = 1, notch = 0, artCv = null, lastT = 0, edge = "rgba(0,0,0,.22)";
-    // A streamer's free end flutters more than the end at the pole.
-    const ampAt = x => streamer ? AMP * (0.45 + 0.9 * x / W) : AMP;
+    const K = 2 * Math.PI / LAMBDA, OMEGA = 2 * Math.PI / PERIOD, flutter = F.info[id].flutter;
+    let W = 0, H = 0, BH = 0, TOP = 0, AMP = 0, dpr = 1, artCv = null, lastT = 0, edge = "rgba(0,0,0,.22)";
+    // The free end of a flag flutters more than the end at the pole (used for the US banner).
+    const ampAt = x => flutter ? AMP * (0.45 + 0.9 * x / W) : AMP;
 
     function starPath(a, cx, cy, r) {
       a.beginPath();
@@ -321,7 +321,7 @@
     function build() {
       W = Math.max(1, host.clientWidth); H = Math.max(1, host.clientHeight); dpr = window.devicePixelRatio || 1;
       canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
-      AMP = H / 12; BH = Math.round(H * F.info[id].bandRatio); TOP = (H - BH) / 2; notch = streamer ? F.notchLength(W) : 0;
+      AMP = H / 12; BH = Math.round(H * F.info[id].bandRatio); TOP = (H - BH) / 2;
       artCv = document.createElement("canvas"); artCv.width = Math.round(W * dpr); artCv.height = Math.round(BH * dpr);
       const a = artCv.getContext("2d"); a.scale(dpr, dpr);
       F.art(id, W, BH).forEach(o => { a.fillStyle = o.c; if (o.t === "rect") a.fillRect(o.x, o.y, o.w, o.h); else starPath(a, o.x, o.y, o.r); });
@@ -338,18 +338,14 @@
     function draw(t) {
       lastT = t; if (!artCv) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
-      const ph = OMEGA * t, top = [], bot = [], nu = [], nl = [];
+      const ph = OMEGA * t, top = [], bot = [];
       for (let x = 0; x < W; x += SW) {
         const c = Math.cos(K * x - ph), y = TOP + ampAt(x) * Math.sin(K * x - ph);
-        if (notch && x >= W - notch) {                                 // swallowtail: cut a V out of the free end
-          const h = (x - (W - notch)) / notch * BH / 2;
-          piece(x, y, 0, BH / 2 - h, c); piece(x, y, BH / 2 + h, BH / 2 - h, c);
-          nu.push([x, y + BH / 2 - h]); nl.push([x, y + BH / 2 + h]);
-        } else piece(x, y, 0, BH, c);
+        piece(x, y, 0, BH, c);
         top.push([x, y]); bot.push([x, y + BH]);
       }
       ctx.strokeStyle = edge; ctx.lineWidth = 1.6; ctx.lineJoin = "round";
-      line(top); line(bot); line(nu); line(nl);
+      line(top); line(bot);
     }
     function readEdge() { edge = getComputedStyle(document.documentElement).getPropertyValue("--flagedge").trim() || edge; draw(lastT); }
     readEdge(); build();
