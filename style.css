@@ -50,6 +50,7 @@ h2 { font-size: 18px; margin: 32px 0 8px; }
 
 /* Clock */
 #clock { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 2px 0 10px; }
+#clock div:last-child { margin-left: auto; }   /* first box on the left edge, last box on the right edge */
 #clock div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 10px; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; background: var(--head); }
 #clock b { font-size: 13px; color: var(--muted); font-weight: 600; }
 #clock span { font-size: 15px; font-variant-numeric: tabular-nums; }
