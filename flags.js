@@ -12,8 +12,11 @@
   const NL = ["#ae1c28", "#ffffff", "#21468b"];                        // red, white, blue (horizontal)
   const US = { red: "#b22234", white: "#ffffff", blue: "#3c3b6e" };
 
-  // Fifty stars in staggered rows across a canton cw x ch. Candidate layouts all sum to 50; pick the one that
-  // allows the biggest stars without them touching (checking same-row, diagonal and two-rows-apart neighbours).
+  // Fifty stars in staggered rows across a canton cw x ch pixels. Candidate layouts (rows of stars, all summing
+  // to 50) are tried in turn; the one that allows the biggest stars without any two touching wins. "Touching"
+  // is checked via the packing formula below (same-row and adjacent-row spacing; five layouts cover every case
+  // that comes up between phone and desktop widths, so it does not need to be exhaustive).
+  // Returns { rows: [n, n, ...], r: star radius in px, stars: [{x, y}, ...] } (x, y relative to the canton).
   const LAYOUTS = [[25, 25], [17, 16, 17], [13, 12, 13, 12], [10, 10, 10, 10, 10], [6, 5, 6, 5, 6, 5, 6, 5, 6]];
   function starLayout(cw, ch) {
     let best = null;
@@ -34,8 +37,10 @@
     return best;
   }
 
-  // Drawing operations for the flag artwork at W x H pixels:
-  //   { t: "rect", x, y, w, h, c }  and  { t: "star", x, y, r, c }
+  // Drawing operations for one flag's artwork at W x H pixels (id: "be" | "nl" | "us"). Returns a flat list of:
+  //   { t: "rect", x, y, w, h, c }  -- a filled rectangle
+  //   { t: "star", x, y, r, c }     -- a 5-point star, centre (x, y), circumradius r
+  // c is always a 6-digit hex colour. app.js turns these into canvas fill calls; check.js checks them directly.
   function art(id, W, H) {
     const ops = [];
     if (id === "be") {
@@ -52,7 +57,9 @@
     return ops;
   }
 
-  // Small SVG favicon for each flag.
+  // A small inline SVG favicon for one flag (id: "be" | "nl" | "us"), as a string ready for a data: URI.
+  // Belgium and the Netherlands reuse the flat colour bands; the US one is drawn in true flag proportions
+  // (not the wide banner layout -- see the comment inside), so it still reads as a flag at 16 px.
   function favicon(id) {
     const open = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='";
     if (id === "be") return open + "0 0 3 2'>" + BE.map((c, i) => "<rect x='" + i + "' width='1' height='2' fill='" + c + "'/>").join("") + "</svg>";
@@ -76,8 +83,10 @@
     return open + "0 0 19 10'>" + stripes + "<rect width='" + cw + "' height='" + ch.toFixed(3) + "' fill='" + US.blue + "'/><path d='" + d + "' fill='" + US.white + "'/></svg>";
   }
 
-  // A random flag index, never the one shown last time (prev: that index, or anything else if unknown).
-  // rand is injectable so check.js can test it deterministically.
+  // Picks a random flag index (0..ORDER.length-1), guaranteed not to equal `prev` (the index shown last time;
+  // pass anything that is not a valid index -- NaN, undefined, out of range -- to mean "unknown", in which case
+  // any flag may come up). `rand` defaults to Math.random and is injectable so check.js can test this
+  // deterministically with a fixed sequence.
   function pick(prev, rand) {
     rand = rand || Math.random;
     const n = ORDER.length, skip = Number.isInteger(prev) && prev >= 0 && prev < n;

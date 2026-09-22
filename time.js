@@ -1,6 +1,8 @@
 // Convert a venue-local wall-clock time to US Eastern, DST-aware.
 // etTime("2026-10-25", "15:10", "Europe/Brussels") -> { time: "10:10 AM", dayShift: 0 }
 (function () {
+  // Minutes to ADD to a UTC instant to get the local wall-clock time in `tz` at that instant
+  // (i.e. the timezone's offset from UTC, DST included). E.g. Europe/Brussels in winter -> 60.
   function offsetMinutes(utcMs, tz) {
     const p = new Intl.DateTimeFormat("en-US", {
       timeZone: tz, hourCycle: "h23",
@@ -11,6 +13,10 @@
     return Math.round((asUtc - utcMs) / 60000);
   }
 
+  // Converts a venue-local wall-clock time to US Eastern.
+  //   dateStr: "YYYY-MM-DD" (the venue's local date)   hhmm: "HH:MM" (24h, venue-local)   tz: IANA zone, e.g. "Europe/Brussels"
+  // Returns { time: "10:10 AM", dayShift: 0 }, where dayShift is how many days later/earlier the Eastern date falls
+  // (e.g. a late-night European race can land on the previous day in the US).
   function etTime(dateStr, hhmm, tz) {
     const [y, mo, d] = dateStr.split("-").map(Number);
     const [h, mi] = hhmm.split(":").map(Number);

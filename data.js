@@ -11,6 +11,11 @@
 window.CX = {
   updated: "2026-09-20",
 
+  // The seven groups races are filtered/coloured/shaped by. Fields:
+  //   name: full name (shown in the "Where to watch" list)     short: short name (table pill, filter chip)
+  //   color: 6-digit hex (must give >=4.5:1 contrast with white text -- see the check in check.js)
+  //   shape: a key into app.js's SHAPES, so a series is never identified by colour alone
+  //   note: informational only; not currently rendered
   series: {
     wc:   { name: "UCI World Cup",     short: "World Cup",   color: "#c8102e", shape: "circle", note: "12 rounds, Nov 27 – Jan 24. Top-tier UCI series." },
     sp:   { name: "Superprestige",     short: "Superprestige", color: "#0b6fb8", shape: "square", note: "8 Belgian rounds, Oct 25 – Jan 2 (Telenet title sponsor)." },
@@ -21,7 +26,11 @@ window.CX = {
     us:   { name: "US UCI calendar",   short: "US",          color: "#5a6570", shape: "cross", note: "8 US UCI events (USCX and others). Pan-Ams and US Nationals are listed under Championships and Nationals." }
   },
 
-  // What a US viewer can use, per series.
+  // What a US viewer can use, per series. Keyed the same as `series` above. Fields:
+  //   badge: short label shown on every race's row (a trailing "?" means not confirmed for 2026-27)
+  //   primary: the fuller answer shown in the "Where to watch" summary line
+  //   status: "listed" | "last-season" | "unknown" -- see the legend at the top of this file; drives the badge colour
+  //   detail, fallback: the two paragraphs shown when a "Where to watch" entry is expanded
   broadcast: {
     wc: {
       badge: "FloBikes",
@@ -81,7 +90,14 @@ window.CX = {
     { name: "UCI YouTube", cost: "Free", note: "Only where no local rights holder exists." }
   ],
 
-  // Elite calendar. date = first day, end = optional last day.
+  // Elite calendar. Each entry:
+  //   d: "YYYY-MM-DD" first day (required)      e: "YYYY-MM-DD" last day (only if the race spans >1 day)
+  //   n: race name                              p: "Place, CCC" (3-letter country code; US/Canada use a state/province abbreviation)
+  //   s: series key (must exist in `series` above)      c: UCI category, e.g. "C1/C2" (US races only, informational)
+  //   r: round number within its series (Superprestige/X²O/World Cup; optional, informational)
+  //   note: shown under the race name on the page (optional)
+  //   l: per-race link overrides -- { site, results, yt, ytNote } -- see `seriesLinks` below for the shape
+  //   b: per-race broadcast override -- { t: "badge text", s: "listed"|"last-season"|"unknown" } -- overrides the series default
   events: [
     // --- US ---
     { d: "2026-09-19", e: "2026-09-20", n: "Rochester Cyclocross (USCX)", p: "Rochester, NY", s: "us", c: "C1/C2", l: {"site": "https://rochestercyclocross.com/", "results": "https://rochestercyclocross.com/?page_id=70", "yt": "https://www.youtube.com/@WideAnglePodium", "ytNote": "CXTV streamed this race in full in 2025; 2026 streams not yet posted"} },
