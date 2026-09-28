@@ -1,5 +1,5 @@
 // Edit this file to update the guide. app.js renders everything from here.
-// Last researched: 2026-09-20.
+// Last researched: 2026-09-27. Broadcast section last checked 2026-09-27.
 //
 // broadcast.status:
 //   "listed"     = the broadcaster has published a 2026-27 event page
@@ -9,7 +9,7 @@
 // An event can override it with  b: { t: "text", s: "status" }.
 
 window.CX = {
-  updated: "2026-09-20",
+  updated: "2026-09-27",
 
   // The seven groups races are filtered/coloured/shaped by. Fields:
   //   name: full name (shown in the "Where to watch" list)     short: short name (table pill, filter chip)
@@ -43,21 +43,21 @@ window.CX = {
       badge: "FloBikes or HBO Max?",
       primary: "FloBikes or HBO Max (unresolved)",
       status: "unknown",
-      detail: "Conflicting signals. HBO Max carried it in 2025-26, but FloBikes has published 2026-27 pages for Overijse and Heusden. Their dates are off from the official calendar (Oct 26 vs Oct 25; Dec 23 vs Dec 25 in Zolder), so they may be placeholders.",
+      detail: "Still unresolved, and the FloBikes evidence looks weaker on a second look (2026-09-27). FloBikes now has pages for four rounds (Overijse, Niel, Merksplas, Diegem). Niel and Diegem show this season's correct dates; Overijse and Merksplas are one day off. But a similarly labeled FloBikes page for an unrelated race (HG Cross Meulebeke) turned out to show last season's date under this season's label, so a matching date isn't proof these are live 2026-27 pages rather than recycled ones. HBO Max carried the series in 2025-26; no 2026-27 confirmation from them either.",
       fallback: "Check both services the week before Overijse (Oct 25)."
     },
     x2o: {
       badge: "HBO Max?",
       primary: "HBO Max (2025-26 rights holder)",
       status: "last-season",
-      detail: "HBO Max streamed it in 2025-26. No US announcement found for 2026-27, and no FloBikes 2026-27 pages. FloBikes carried it in 2023-24, so it could move back.",
+      detail: "HBO Max streamed it in 2025-26; no 2026-27 confirmation found. Correction (2026-09-27): FloBikes does have pages for three rounds (Koppenbergcross, Hofstade, Loenhout), which an earlier pass read as a possible sign FloBikes was moving back in. But the Loenhout page shows Dec 29, which is last season's Azencross date, not this season's Dec 23 -- so that page is very likely a stale 2025-26 page still live under a \"2026\" label, not evidence of a 2026-27 deal. Treat all of FloBikes' X²O pages with that same doubt.",
       fallback: "Sporza (Belgium) is free-to-air through at least 2028 but geo-blocked from the US."
     },
     hg: {
       badge: "HBO Max?",
       primary: "HBO Max (2025-26 rights holder)",
       status: "last-season",
-      detail: "Formerly Exact Cross. HBO Max streamed it in 2025-26 (its site showed Maldegem, Feb 4). No US announcement found for 2026-27 under the new name.",
+      detail: "Formerly Exact Cross. HBO Max streamed it in 2025-26 (its site showed Maldegem, Feb 4). No US announcement found for 2026-27 under the new name. A FloBikes page titled \"2026 Cyclocross - Exact Cross - Meulebeke\" (found 2026-09-27) turned out to show Oct 4, which was last season's date, not this season's Oct 17 -- a stale page under a misleading label, not a 2026-27 signal.",
       fallback: "Sporza (Belgium), geo-blocked from the US."
     },
     champ: {
@@ -69,10 +69,10 @@ window.CX = {
     },
     nat: {
       badge: "Unknown",
-      primary: "Unknown for all four",
+      primary: "FloBikes (US); Canada, Belgium, Netherlands unknown",
       status: "unknown",
-      detail: "US: USA Cycling says select races will stream online, platform not named. Canada, Belgium and the Netherlands: no US information found. The Belgian and Dutch races normally air on Sporza and NOS, which are geo-blocked outside those countries.",
-      fallback: "Check USA Cycling (cxnats.usacycling.org) for the US stream, and FloBikes the week of the Belgian and Dutch races."
+      detail: "US Nationals: confirmed on FloBikes (cxnats.usacycling.org's own page says \"Watch Live and On Demand on FloBikes\", checked 2026-09-27). Canada, Belgium and the Netherlands: still no US information found. The Belgian and Dutch races normally air on Sporza and NOS, which are geo-blocked outside those countries.",
+      fallback: "US Nationals: FloBikes. For the others, check FloBikes anyway the week of the race; nothing else has turned up."
     },
     us: {
       badge: "YouTube (CXTV)?",
@@ -109,7 +109,7 @@ window.CX = {
     { d: "2026-11-07", e: "2026-11-08", n: "Pan-American Championships / DCCX", p: "Washington, DC", s: "champ", b: { t: "YouTube (CXTV)?", s: "last-season" }, c: "CC/C2", l: {"site": "https://www.panamcxdc.com/", "results": "https://cyclocross24.com/race/pan-american-championships/", "yt": "https://www.youtube.com/@WideAnglePodium", "ytNote": "CXTV covered the 2025 USCX and Pan-Am races; 2026 not confirmed"} },
     { d: "2026-11-14", e: "2026-11-15", n: "Boulder Cup", p: "Boulder, CO", s: "us", c: "C1/C2", l: {"site": "https://boulderjuniorcycling.org/boulder-cup/", "results": "https://cyclocross24.com/race/us-open-cyclocross/"} },
     { d: "2026-11-21", e: "2026-11-22", n: "North Carolina Grand Prix", p: "Hendersonville, NC", s: "us", c: "C2", l: {"site": "https://www.nccyclocross.com/NCGP", "results": "https://cyclocross24.com/race/north-carolina-grand-prix/"} },
-    { d: "2026-12-12", e: "2026-12-13", n: "USA Cycling National Championships", p: "Fayetteville, AR", s: "nat", c: "CN", note: "Event runs Dec 9–13. Elite races on the weekend.", l: {"site": "https://cxnats.usacycling.org/", "results": "https://cyclocross24.com/race/usa-national-championships/"} },
+    { d: "2026-12-12", e: "2026-12-13", n: "USA Cycling National Championships", p: "Fayetteville, AR", s: "nat", c: "CN", note: "Event runs Dec 9–13. Elite races on the weekend.", l: {"site": "https://cxnats.usacycling.org/", "results": "https://cyclocross24.com/race/usa-national-championships/"}, b: { t: "FloBikes", s: "listed" } },
 
     // --- HG Cross ---
     { d: "2026-10-11", n: "HG Cross Dendermonde", p: "Dendermonde, BEL", s: "hg", l: {"site": "https://hgcross.be/dendermonde/", "results": "https://hgcross.be/dendermonde/"} },
@@ -168,7 +168,7 @@ window.CX = {
   open: [
     "Who holds US rights to the Superprestige, X²O Trofee and HG Cross for 2026-27 (HBO Max held them in 2025-26).",
     "Whether FloBikes will carry the Euros or the Ostend Worlds.",
-    "How to stream the US, Canadian, Belgian and Dutch Nationals from the US.",
+    "US access to the Canadian, Belgian and Dutch Nationals (US Nationals is confirmed on FloBikes).",
     "2026-27 national championship dates for France, Switzerland, Great Britain, Italy, Germany, Czechia and others (last season most fell in early-to-mid January).",
     "Start times for the World Cup, Worlds, Euros, most X²O and HG Cross rounds, and all US races. Ostrava (Nov 27) is a night race.",
     "Current subscription prices."
