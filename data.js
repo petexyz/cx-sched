@@ -1,5 +1,5 @@
 // Edit this file to update the guide. app.js renders everything from here.
-// Last researched: 2026-09-27. Broadcast section last checked 2026-09-27.
+// Last researched: 2026-10-01. Broadcast section last checked 2026-10-01.
 //
 // broadcast.status:
 //   "listed"     = the broadcaster has published a 2026-27 event page
@@ -9,7 +9,7 @@
 // An event can override it with  b: { t: "text", s: "status" }.
 
 window.CX = {
-  updated: "2026-09-27",
+  updated: "2026-10-01",
 
   // The seven groups races are filtered/coloured/shaped by. Fields:
   //   name: full name (shown in the "Where to watch" list)     short: short name (table pill, filter chip)
@@ -43,21 +43,21 @@ window.CX = {
       badge: "FloBikes or HBO Max?",
       primary: "FloBikes or HBO Max (unresolved)",
       status: "unknown",
-      detail: "Still unresolved, and the FloBikes evidence looks weaker on a second look (2026-09-27). FloBikes now has pages for four rounds (Overijse, Niel, Merksplas, Diegem). Niel and Diegem show this season's correct dates; Overijse and Merksplas are one day off. But a similarly labeled FloBikes page for an unrelated race (HG Cross Meulebeke) turned out to show last season's date under this season's label, so a matching date isn't proof these are live 2026-27 pages rather than recycled ones. HBO Max carried the series in 2025-26; no 2026-27 confirmation from them either. A UK fan guide (rijden.uk, checked 2026-09-27) that has specific per-race coverage for other series still lists every Superprestige round, including Overijse four weeks out, as \"TBC\".",
+      detail: "Still unresolved, and the FloBikes evidence looks weaker on a second look (2026-09-27). FloBikes now has pages for four rounds (Overijse, Niel, Merksplas, Diegem). Niel and Diegem show this season's correct dates; Overijse and Merksplas are one day off. But a similarly labeled FloBikes page for an unrelated race (HG Cross Meulebeke) turned out to show last season's date under this season's label, so a matching date isn't proof these are live 2026-27 pages rather than recycled ones. HBO Max carried the series in 2025-26; no 2026-27 schedule from them yet, but their current US sports page still lists \"cyclo-cross\" as a category it streams (checked 2026-10-01), and a Feb 2024 Max/WBD press release named Superprestige Middelkerke by name, so this is an established pattern, just not yet scheduled for this season. A UK fan guide (rijden.uk, checked 2026-09-27) that has specific per-race coverage for other series still lists every Superprestige round, including Overijse four weeks out, as \"TBC\". Separately: FloBikes has a 2024 sublicense from Warner Bros Discovery (who hold the underlying cycling rights) specifically for Canada, so a FloBikes cyclocross listing may be Canada-only and not reach the US app.",
       fallback: "Check both services the week before Overijse (Oct 25)."
     },
     x2o: {
       badge: "HBO Max?",
       primary: "HBO Max (2025-26 rights holder)",
       status: "last-season",
-      detail: "HBO Max streamed it in 2025-26; no 2026-27 confirmation found. Correction (2026-09-27): FloBikes does have pages for three rounds (Koppenbergcross, Hofstade, Loenhout), which an earlier pass read as a possible sign FloBikes was moving back in. But the Loenhout page shows Dec 29, which is last season's Azencross date, not this season's Dec 23 -- so that page is very likely a stale 2025-26 page still live under a \"2026\" label, not evidence of a 2026-27 deal. A UK fan guide (rijden.uk, checked 2026-09-27) still lists every X²O round as \"TBC\", including Koppenbergcross a few weeks out.",
+      detail: "HBO Max streamed it in 2025-26; no 2026-27 confirmation found. Correction (2026-09-27): FloBikes does have pages for three rounds (Koppenbergcross, Hofstade, Loenhout), which an earlier pass read as a possible sign FloBikes was moving back in. But the Loenhout page shows Dec 29, which is last season's Azencross date, not this season's Dec 23 -- so that page is very likely a stale 2025-26 page still live under a \"2026\" label, not evidence of a 2026-27 deal (and FloBikes has a 2024 Warner Bros Discovery sublicense specifically for Canada, so any genuine FloBikes cyclocross listing may not reach the US app anyway). A UK fan guide (rijden.uk, checked 2026-09-27) still lists every X²O round as \"TBC\", including Koppenbergcross a few weeks out. HBO Max's own current US sports page still lists \"cyclo-cross\" as a category (checked 2026-10-01), with no 2026-27 schedule posted yet.",
       fallback: "Sporza (Belgium) is free-to-air through at least 2028 but geo-blocked from the US."
     },
     hg: {
       badge: "HBO Max?",
       primary: "HBO Max (2025-26 rights holder)",
       status: "last-season",
-      detail: "Formerly Exact Cross. HBO Max streamed it in 2025-26 (its site showed Maldegem, Feb 4). No first-party 2026-27 announcement found. A FloBikes page titled \"2026 Cyclocross - Exact Cross - Meulebeke\" (found 2026-09-27) turned out to show Oct 4, last season's date, not this season's Oct 17 -- a stale page, not a 2026-27 signal. Best lead so far (2026-09-27): a UK fan guide (rijden.uk), current for this season, lists specific coverage for only 3 of its 41 races -- all three are HG Cross: Dendermonde (Oct 11) as Sporza + HBO Max, and Meulebeke (Oct 17) and Heerderstrand (Oct 24) as HBO Max. Every other round on that page, in every series, is still \"TBC\". Not a first-party source and it never says \"United States\", but it is the most specific lead on any series so far.",
+      detail: "Formerly Exact Cross. HBO Max streamed it in 2025-26 (its site showed Maldegem, Feb 4). No first-party 2026-27 schedule found yet, but HBO Max's own current US sports page still lists \"cyclo-cross\" as a category it streams (checked 2026-10-01) and a Feb 2024 Max/WBD press release named a specific Exact Cross round (Sint-Niklaas) -- an established pattern, just not scheduled for 2026-27 yet. A FloBikes page titled \"2026 Cyclocross - Exact Cross - Meulebeke\" (found 2026-09-27) turned out to show Oct 4, last season's date, not this season's Oct 17 -- a stale page, not a 2026-27 signal. Best lead so far (2026-09-27): a UK fan guide (rijden.uk), current for this season, lists specific coverage for only 3 of its 41 races -- all three are HG Cross: Dendermonde (Oct 11) as Sporza + HBO Max, and Meulebeke (Oct 17) and Heerderstrand (Oct 24) as HBO Max. Every other round on that page, in every series, is still \"TBC\". Not a first-party source and it never says \"United States\", but it is the most specific lead on any series so far.",
       fallback: "Sporza (Belgium), geo-blocked from the US."
     },
     champ: {
@@ -86,7 +86,7 @@ window.CX = {
   // Cost reference as reported in 2025-26 guides. Verify before subscribing.
   prices: [
     { name: "FloBikes", cost: "$29.99/mo or $149.99/yr", note: "Carries World Cup and Worlds." },
-    { name: "HBO Max", cost: "$18.49/mo (Standard)", note: "Live sports needs Standard or Premium. HBO Max's own cyclocross page also mentions a sports add-on, so confirm at signup." },
+    { name: "HBO Max", cost: "$18.49/mo (Standard) + the B/R Sports Add-On", note: "Live cycling, including cyclocross, is gated behind the \"B/R Sports Add-On\" on top of a Standard or Premium plan, not included free (confirmed via HBO Max's press site, 2026-10-01). Confirm the current add-on price at signup." },
     { name: "UCI YouTube", cost: "Free", note: "Only where no local rights holder exists." }
   ],
 
