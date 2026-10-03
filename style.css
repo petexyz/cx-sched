@@ -1,4 +1,4 @@
-/* CX schedule 2026-27: styles. Theme: light by default; dark (navy) via [data-theme="dark"] or the system setting. */
+/* CX schedule 2026-27: styles. Theme: light by default; dark (navy) or grey via [data-theme] or the system setting. */
 :root {
   --bg: #fafaf8; --fg: #1c1f22; --muted: #5d656d; --line: #dcdfe2; --head: #eef0f2;
   --warn: #8a5a00; --warn-bg: #fff4d6; --ok: #1d7a3a; --focus: #0b6fb8; --flagedge: rgba(0,0,0,.22);
@@ -9,8 +9,15 @@
   --warn: #f0c56a; --warn-bg: #332d19; --ok: #4cc26f; --focus: #7ab8ff; --flagedge: rgba(255,255,255,.5);
   color-scheme: dark;
 }
+/* Grey: a neutral mid-grey theme, chosen explicitly via the toggle -- never picked automatically by the
+   system setting (there is no OS "prefers grey"), so it is excluded from the prefers-color-scheme block below. */
+:root[data-theme="grey"] {
+  --bg: #3a3a3c; --fg: #f2f2f2; --muted: #c7c7ca; --line: #5a5a5e; --head: #47474a;
+  --warn: #ffd166; --warn-bg: #4a3c1f; --ok: #8fe3a8; --focus: #9fd0ff; --flagedge: rgba(255,255,255,.4);
+  color-scheme: dark;
+}
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
+  :root:not([data-theme="light"]):not([data-theme="grey"]) {
     --bg: #0e1a2b; --fg: #e8eef7; --muted: #a3b3c9; --line: #26395a; --head: #15263d;
     --warn: #f0c56a; --warn-bg: #332d19; --ok: #4cc26f; --focus: #7ab8ff; --flagedge: rgba(255,255,255,.5);
     color-scheme: dark;
@@ -75,6 +82,7 @@ details.filters > summary { cursor: pointer; font-weight: 600; padding: 6px 0; }
 .leaflet-popup-content { font: 13px/1.4 system-ui, sans-serif; color: #1c1f22; }
 .leaflet-popup-content a { text-decoration: underline; text-underline-offset: 2px; }
 :root[data-theme="dark"] .leaflet-tile-pane { filter: brightness(.78) contrast(1.05); }
+:root[data-theme="grey"] .leaflet-tile-pane { filter: brightness(.85) contrast(1.02) saturate(.9); }
 
 /* Tables */
 .wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }

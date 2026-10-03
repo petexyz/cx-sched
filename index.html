@@ -12,10 +12,11 @@
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 2'%3E%3Crect width='1' height='2' fill='%23000'/%3E%3Crect x='1' width='1' height='2' fill='%23fae042'/%3E%3Crect x='2' width='1' height='2' fill='%23ed2939'/%3E%3C/svg%3E">
 <script>
-  // Apply the chosen theme before first paint so there is no flash. ?theme=light|dark forces one.
+  // Apply the chosen theme before first paint so there is no flash. ?theme=light|dark|grey forces one.
   try {
-    var q = new URLSearchParams(location.search).get("theme"), t = (q === "light" || q === "dark") ? q : localStorage.getItem("cx-theme");
-    if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+    var THEMES = ["light", "dark", "grey"];
+    var q = new URLSearchParams(location.search).get("theme"), t = THEMES.indexOf(q) > -1 ? q : localStorage.getItem("cx-theme");
+    if (THEMES.indexOf(t) > -1) document.documentElement.setAttribute("data-theme", t);
   } catch (e) {}
 </script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">

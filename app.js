@@ -342,17 +342,21 @@
     D.prices.map(p => "<tr><td data-label='Service'>" + esc(p.name) + "</td><td data-label='Cost'>" + esc(p.cost) + "</td><td data-label='Note'>" + esc(p.note) + "</td></tr>").join("") + "</tbody>";
   $("sources").innerHTML = D.sources.map(s => "<li><a href='" + esc(s[1]) + "' target='_blank' rel='noopener'>" + esc(s[0]) + "</a></li>").join("");
 
-  // ---- Theme toggle (remembered; defaults to the system setting) ----
+  // ---- Theme toggle: light -> dark -> grey -> light, remembered; defaults to the system's light/dark setting
+  // (grey is never picked automatically -- there is no OS "prefers grey" -- only reached by clicking through). ----
   (function themeToggle() {
     const root = document.documentElement, btn = $("theme"), mq = matchMedia("(prefers-color-scheme: dark)");
+    const ORDER = ["light", "dark", "grey"];
+    const LABEL = { light: "☀ Light mode", dark: "☾ Dark mode", grey: "◐ Grey mode" };   // each shows the mode a click switches TO
     const current = () => root.getAttribute("data-theme") || (mq.matches ? "dark" : "light");
+    const next = t => ORDER[(ORDER.indexOf(t) + 1) % ORDER.length];
     function paint() {
-      const dark = current() === "dark";
-      btn.textContent = dark ? "☀ Light mode" : "☾ Dark mode";
-      btn.setAttribute("aria-label", "Switch to " + (dark ? "light" : "dark") + " mode");
+      const upcoming = next(current());
+      btn.textContent = LABEL[upcoming];
+      btn.setAttribute("aria-label", "Switch to " + upcoming + " mode");
     }
     if (!root.getAttribute("data-theme")) root.setAttribute("data-theme", current());
-    btn.onclick = () => { const next = current() === "dark" ? "light" : "dark"; root.setAttribute("data-theme", next); store.set("cx-theme", next); paint(); };
+    btn.onclick = () => { const t = next(current()); root.setAttribute("data-theme", t); store.set("cx-theme", t); paint(); };
     paint();
   })();
 
