@@ -342,22 +342,16 @@
     D.prices.map(p => "<tr><td data-label='Service'>" + esc(p.name) + "</td><td data-label='Cost'>" + esc(p.cost) + "</td><td data-label='Note'>" + esc(p.note) + "</td></tr>").join("") + "</tbody>";
   $("sources").innerHTML = D.sources.map(s => "<li><a href='" + esc(s[1]) + "' target='_blank' rel='noopener'>" + esc(s[0]) + "</a></li>").join("");
 
-  // ---- Theme toggle: light -> dark -> grey -> light, remembered; defaults to the system's light/dark setting
-  // (grey is never picked automatically -- there is no OS "prefers grey" -- only reached by clicking through). ----
-  (function themeToggle() {
-    const root = document.documentElement, btn = $("theme"), mq = matchMedia("(prefers-color-scheme: dark)");
-    const ORDER = ["light", "dark", "grey"];
-    const LABEL = { light: "☀ Light mode", dark: "☾ Dark mode", grey: "◐ Grey mode" };   // each shows the mode a click switches TO
+  // ---- Color scheme menu: a direct Light/Dark/Grey picker, remembered; defaults to the system's light/dark
+  // setting (grey is never picked automatically -- there is no OS "prefers grey" -- only reached via the menu). ----
+  (function themeMenu() {
+    const root = document.documentElement, sel = $("theme"), mq = matchMedia("(prefers-color-scheme: dark)");
+    const THEMES = [["light", "☀ Light"], ["dark", "☾ Dark"], ["grey", "◐ Grey"]];
     const current = () => root.getAttribute("data-theme") || (mq.matches ? "dark" : "light");
-    const next = t => ORDER[(ORDER.indexOf(t) + 1) % ORDER.length];
-    function paint() {
-      const upcoming = next(current());
-      btn.textContent = LABEL[upcoming];
-      btn.setAttribute("aria-label", "Switch to " + upcoming + " mode");
-    }
+    sel.innerHTML = THEMES.map(([v, label]) => "<option value='" + v + "'>" + label + "</option>").join("");
     if (!root.getAttribute("data-theme")) root.setAttribute("data-theme", current());
-    btn.onclick = () => { const t = next(current()); root.setAttribute("data-theme", t); store.set("cx-theme", t); paint(); };
-    paint();
+    sel.value = current();
+    sel.onchange = () => { root.setAttribute("data-theme", sel.value); store.set("cx-theme", sel.value); };
   })();
 
   // ---- Random flag banner: Belgium, the Netherlands, the United States (Stars and Stripes). ----
