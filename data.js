@@ -9,7 +9,7 @@
 // An event can override it with  b: { t: "text", s: "status" }.
 
 window.CX = {
-  updated: "2026-10-01",
+  updated: "2026-10-09",
 
   // The seven groups races are filtered/coloured/shaped by. Fields:
   //   name: full name (shown in the "Where to watch" list)     short: short name (table pill, filter chip)
@@ -40,11 +40,11 @@ window.CX = {
       fallback: "UCI YouTube streams rounds only where no local broadcaster has the rights, and US access has been inconsistent. Treat it as a bonus."
     },
     sp: {
-      badge: "FloBikes or HBO Max?",
-      primary: "FloBikes or HBO Max (unresolved)",
-      status: "unknown",
-      detail: "Still unresolved, and the FloBikes evidence looks weaker on a second look (2026-09-27). FloBikes now has pages for four rounds (Overijse, Niel, Merksplas, Diegem). Niel and Diegem show this season's correct dates; Overijse and Merksplas are one day off. But a similarly labeled FloBikes page for an unrelated race (HG Cross Meulebeke) turned out to show last season's date under this season's label, so a matching date isn't proof these are live 2026-27 pages rather than recycled ones. HBO Max carried the series in 2025-26; no 2026-27 schedule from them yet, but their current US sports page still lists \"cyclo-cross\" as a category it streams (checked 2026-10-01), and a Feb 2024 Max/WBD press release named Superprestige Middelkerke by name, so this is an established pattern, just not yet scheduled for this season. A UK fan guide (rijden.uk, checked 2026-09-27) that has specific per-race coverage for other series still lists every Superprestige round, including Overijse four weeks out, as \"TBC\". Separately: FloBikes has a 2024 sublicense from Warner Bros Discovery (who hold the underlying cycling rights) specifically for Canada, so a FloBikes cyclocross listing may be Canada-only and not reach the US app.",
-      fallback: "Check both services the week before Overijse (Oct 25)."
+      badge: "FloBikes",
+      primary: "FloBikes",
+      status: "listed",
+      detail: "FloBikes' own Superprestige series page (viewed signed in, 2026-10-09) lists all 8 rounds, Overijse through Gullegem, as \"Streaming on FloSports\" with this season's dates; start times are still TBD. The same page marks every 2024-25 and 2025-26 round \"Unavailable\" (HBO Max carried those), so the label is not just boilerplate. Caveats: its venue fields are sloppy (Niel shows as \"Neal, IL\"), FloBikes lists by country, but since 2026 its schedule has a Streaming column that flags events not available in the viewer's market (a fan guide describes this), so \"Streaming on FloSports\" on a US-signed-in view is meaningful. HBO Max has announced nothing for 2026-27.",
+      fallback: "If a round does not show on FloBikes, check HBO Max the week of the race."
     },
     x2o: {
       badge: "HBO Max?",
